@@ -6,83 +6,137 @@
 <meta name="color-scheme" content="dark">
 <title>DRONE LAB MK·II · 嗡鸣合成器</title>
 <style>
+  /* ============================================================
+     DRONE LAB MK·II — design by taste-skill rules:
+     DESIGN_VARIANCE: 7 · MOTION_INTENSITY: 6 · VISUAL_DENSITY: 8
+     read: dark-tech instrument cockpit / mono terminal aesthetic /
+     single electro-blue accent on cold graphite neutrals
+     ============================================================ */
+  :root{
+    --bg:#0b0d11;
+    --panel:#14171e;
+    --panel2:#181c25;
+    --edge:#262b36;
+    --edgeHi:rgba(255,255,255,.05);
+    --ink:#c9d1de;
+    --dim:#7d8697;
+    --faint:#4b5260;
+    --accent:#4f9dff;         /* single accent, locked page-wide */
+    --accentInk:#cfe2ff;
+    --r-lg:12px;              /* shape lock: cards 12 / controls 6 / inputs 4 */
+    --r-md:6px;
+    --r-sm:4px;
+    --sh:0 10px 28px rgba(5,10,18,.55),0 2px 6px rgba(5,10,18,.4);
+  }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
-    background:#0a0912;
-    color:#cfc7e6;font-family:"Cascadia Code","JetBrains Mono",Consolas,Menlo,monospace;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 28px),
+      var(--bg);
+    color:var(--ink);
+    font-family:ui-monospace,"Cascadia Mono",Consolas,"JetBrains Mono",Menlo,monospace;
     display:flex;flex-direction:column;overflow:hidden;user-select:none;font-size:12px;
   }
-  /* ===== 机架 ===== */
-  .rack{background:linear-gradient(180deg,#16131f,#0e0c15);border:1px solid #2a2440;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02),0 6px 22px rgba(0,0,0,.5)}
-  .rackH{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid #231e36;font-size:10px;letter-spacing:2px;color:#8f83b3}
-  .rackH .led{width:7px;height:7px;border-radius:50%;background:#3a3352;box-shadow:none}
-  .rackH .led.on{background:#ff2e88;box-shadow:0 0 8px #ff2e88}
-  .rackH .led.g{background:#00e0a8;box-shadow:0 0 8px #00e0a8}
-  .rackB{padding:10px 12px}
-  /* ===== 旋钮 ===== */
-  .knobWrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;cursor:ns-resize}
-  .knob{width:46px;height:46px;border-radius:50%;position:relative;background:radial-gradient(circle at 35% 30%,#2c2540,#151221 70%);border:1px solid #3c3358;box-shadow:0 3px 8px rgba(0,0,0,.6),inset 0 0 6px rgba(0,0,0,.7)}
-  .knob .arc{position:absolute;inset:2px;border-radius:50%;background:conic-gradient(from -130deg, var(--c,#b06cff) calc(var(--v,0)*280deg), rgba(255,255,255,.06) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));opacity:.9}
-  .knob .ptr{position:absolute;left:50%;bottom:50%;width:2.5px;height:34%;transform-origin:50% 100%;transform:translateX(-50%) rotate(calc(var(--v,0)*280deg - 140deg));background:#f4ecff;border-radius:2px;box-shadow:0 0 6px rgba(200,150,255,.8)}
-  .knob.drag{box-shadow:0 0 16px rgba(176,108,255,.55),0 3px 8px rgba(0,0,0,.6)}
-  .knobL{font-size:9px;color:#8f83b3;letter-spacing:.5px;white-space:nowrap}
-  .knobV{font-size:10px;color:#e6dcff;font-weight:700}
-  .knobWrap.ledOn .led-dot{width:5px;height:5px;border-radius:50%;background:#00e0a8;box-shadow:0 0 6px #00e0a8}
-  /* ===== 分段按钮 / 主按钮 ===== */
-  .seg{display:flex;gap:3px}
-  .seg button{font-family:inherit;font-size:10px;padding:4px 8px;background:#191527;border:1px solid #332b4e;color:#8f83b3;border-radius:5px;cursor:pointer;letter-spacing:.5px}
-  .seg button.on{background:linear-gradient(180deg,#7a3dff22,#5a2bd822);border-color:#a06bff;color:#e8dcff;box-shadow:0 0 10px rgba(160,107,255,.3)}
-  .seg button:hover{color:#fff}
-  .pb{font-family:inherit;font-size:11px;padding:6px 10px;background:#191527;border:1px solid #332b4e;color:#b9acdd;border-radius:6px;cursor:pointer}
-  .pb:hover{background:#241d38;color:#fff}
-  .pb.on{background:linear-gradient(180deg,#ff2e8822,#ff2e8811);border-color:#ff5da8;color:#ffc2dd;box-shadow:0 0 10px rgba(255,46,136,.35)}
-  .pb.burst{background:#2a1116;border-color:#ff5a5a;color:#ffb9b9}
-  .pb.burst:hover{background:#3d1419;box-shadow:0 0 14px rgba(255,90,90,.5)}
-  /* ===== 布局 ===== */
-  header{display:flex;align-items:center;gap:14px;padding:9px 16px;border-bottom:1px solid #221d36}
-  h1{font-size:16px;letter-spacing:.24em;font-weight:900;color:#f2eaff;text-shadow:0 0 14px rgba(176,108,255,.6)}
-  h1 small{font-size:9px;color:#7a6b9e;letter-spacing:2px;vertical-align:super}
-  #patchName{margin-left:auto;font-size:11px;color:#b06cff;letter-spacing:1px}
-  #stage{flex:1;position:relative;min-height:0;margin:8px 12px 0;border:1px solid #2a2440;border-radius:10px;overflow:hidden;background:#000}
+  /* ===== header: nameplate ===== */
+  header{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--edge);background:linear-gradient(180deg,#10131a,#0c0f14)}
+  .brandLed{width:10px;height:10px;border-radius:2px;background:var(--faint);flex:0 0 auto}
+  .brandLed.on{background:var(--accent);box-shadow:0 0 10px var(--accent);animation:ledPulse 2.4s ease-in-out infinite}
+  h1{font-size:15px;letter-spacing:.22em;font-weight:700;color:#e6ebf4;text-transform:uppercase}
+  h1 small{font-size:9px;color:var(--dim);letter-spacing:2px;vertical-align:super;margin-left:4px}
+  .sub{font-size:10px;color:var(--faint);letter-spacing:.5px}
+  #patchName{margin-left:auto;font-size:11px;color:var(--accentInk);letter-spacing:1px;background:rgba(79,157,255,.06);border:1px solid rgba(79,157,255,.22);padding:3px 10px;border-radius:var(--r-sm)}
+  /* ===== stage ===== */
+  #stage{flex:1;position:relative;min-height:0;margin:10px 14px 0;border:1px solid var(--edge);border-radius:var(--r-lg);overflow:hidden;background:#05070b;box-shadow:inset 0 0 60px rgba(0,0,0,.6)}
   #viz{position:absolute;inset:0;width:100%;height:100%}
-  #wake{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(10,9,18,.78)}
-  #wake button{font-family:inherit;font-size:18px;letter-spacing:3px;padding:15px 38px;border-radius:10px;cursor:pointer;background:linear-gradient(180deg,#2b1c55,#1a1138);border:1px solid #8a5cf5;color:#e9dcff;box-shadow:0 0 26px rgba(150,90,255,.45)}
-  #wake .wsub{font-size:11px;color:#6e5f92}
-  #toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(20,12,40,.92);border:1px solid rgba(200,140,255,.5);color:#e6d2ff;padding:6px 16px;font-size:11px;border-radius:8px;opacity:0;transition:opacity .25s;z-index:9;pointer-events:none;letter-spacing:1px;white-space:nowrap}
+  #wake{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(700px 380px at 50% 42%,rgba(79,157,255,.07),transparent 60%),rgba(5,7,11,.86);backdrop-filter:blur(2px)}
+  #wake button{font-family:inherit;font-size:17px;font-weight:700;letter-spacing:3px;padding:14px 36px;border-radius:var(--r-md);cursor:pointer;background:#101620;border:1px solid var(--accent);color:var(--accentInk);box-shadow:0 0 0 4px rgba(79,157,255,.07);transition:all .15s}
+  #wake button:hover{background:#152034;box-shadow:0 0 24px rgba(79,157,255,.3)}
+  #wake button:active{transform:translateY(1px) scale(.985)}
+  #wake .wsub{font-size:11px;color:var(--faint);letter-spacing:1px}
+  #toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(16,20,28,.95);border:1px solid rgba(79,157,255,.4);color:var(--accentInk);padding:6px 16px;font-size:11px;border-radius:var(--r-sm);opacity:0;transition:opacity .25s;z-index:9;pointer-events:none;letter-spacing:1px;white-space:nowrap}
   #toast.on{opacity:1}
-  #panel{padding:8px 12px 10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+  /* ===== rack modules (brushed metal + screws) ===== */
+  .rack{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--edge);border-radius:var(--r-lg);box-shadow:var(--sh);position:relative}
+  .rack::before,.rack::after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a4150,#12151c 70%);box-shadow:inset 0 1px 1px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.04)}
+  .rack::before{top:7px;left:7px}
+  .rack::after{bottom:7px;right:7px}
+  .rackH{display:flex;align-items:center;gap:7px;padding:7px 12px;border-bottom:1px solid var(--edge);font-size:9.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+  .rackH .led{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+  .rackH .led.on{background:var(--accent);box-shadow:0 0 7px var(--accent);animation:ledPulse 2.4s ease-in-out infinite}
+  .rackH .led.g.on{background:#3ecf8e;box-shadow:0 0 7px #3ecf8e;animation:none}
+  .rackB{padding:10px 12px}
+  /* ===== knobs (machined metal) ===== */
+  .knobWrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;cursor:ns-resize}
+  .knob{width:48px;height:48px;border-radius:50%;position:relative;
+    background:
+      radial-gradient(circle at 32% 26%, #39404f 0%, #1b1f28 55%, #12151c 100%);
+    border:1px solid #2b303c;
+    box-shadow:0 4px 10px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.06),inset 0 -2px 4px rgba(0,0,0,.55)}
+  .knob .arc{position:absolute;inset:-3px;border-radius:50%;
+    background:conic-gradient(from -130deg, var(--accent) calc(var(--v,0)*280deg), rgba(255,255,255,.055) 0);
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));
+    mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));opacity:.95}
+  .knob .ptr{position:absolute;left:50%;bottom:50%;width:2.5px;height:32%;transform-origin:50% 100%;transform:translateX(-50%) rotate(calc(var(--v,0)*280deg - 140deg));background:#eef3fb;border-radius:2px;box-shadow:0 0 5px rgba(79,157,255,.9)}
+  .knob.drag{box-shadow:0 0 0 1px rgba(79,157,255,.5),0 4px 14px rgba(79,157,255,.25)}
+  .knobL{font-size:9px;color:var(--dim);letter-spacing:.08em;white-space:nowrap;text-transform:uppercase}
+  .knobV{font-size:10px;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+  /* ===== segment / buttons ===== */
+  .seg{display:flex;gap:3px}
+  .seg button{font-family:inherit;font-size:10px;padding:4px 8px;background:#10141b;border:1px solid var(--edge);color:var(--dim);border-radius:var(--r-sm);cursor:pointer;letter-spacing:.06em;transition:all .1s}
+  .seg button:hover{color:var(--ink);border-color:#333a48}
+  .seg button:active{transform:translateY(1px)}
+  .seg button.on{background:rgba(79,157,255,.12);border-color:#3d76c4;color:var(--accentInk)}
+  .pb{font-family:inherit;font-size:11px;padding:6px 11px;background:#10141b;border:1px solid var(--edge);color:var(--ink);border-radius:var(--r-md);cursor:pointer;transition:all .12s}
+  .pb:hover{border-color:#3d4452;background:#141922}
+  .pb:active{transform:translateY(1px) scale(.98)}
+  .pb.on{background:rgba(79,157,255,.14);border-color:var(--accent);color:var(--accentInk);box-shadow:0 0 12px rgba(79,157,255,.18)}
+  .pb.burst{background:#1c0e10;border-color:#c2484a;color:#f5c4c5}
+  .pb.burst:hover{background:#271315;border-color:#e06365;box-shadow:0 0 12px rgba(224,99,101,.25)}
+  /* ===== layout ===== */
+  #panel{padding:10px 14px 12px;display:flex;flex-direction:column;gap:9px;overflow-y:auto}
   #panel::-webkit-scrollbar{width:6px}
-  #panel::-webkit-scrollbar-thumb{background:#2c2540;border-radius:3px}
-  #presetRow{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
-  #presetRow button{padding:6px 13px}
-  .mods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  #panel::-webkit-scrollbar-thumb{background:#262b36;border-radius:3px}
+  #presetRow{display:flex;gap:8px;flex-wrap:wrap;padding:8px 14px;margin:10px 14px 0;align-items:center}
+  #presetRow .lab{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
+  #presetRow .rightHint{font-size:9px;color:var(--faint);margin-left:auto;letter-spacing:.04em}
+  /* asymmetric rack grid: 3 + 2 (variance 7) */
+  .mods{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
   .mods .rack{overflow:hidden}
-  .mods .rackB{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
-  .mods .rackB .c{display:flex;gap:9px;align-items:flex-start;flex-wrap:wrap}
-  .bottomRow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end}
-  .channel{display:flex;align-items:flex-end;gap:12px}
+  .mVo{grid-column:span 2}.mFi{grid-column:span 2}.mNo{grid-column:span 2}
+  .mSp{grid-column:span 3}.mDr{grid-column:span 3}
+  .mods .rackB{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;align-items:center}
+  .mods .rackB .c{display:flex;gap:8px;flex-direction:column}
+  .bottomRow{display:flex;gap:14px;align-items:end;flex-wrap:wrap}
+  .channel{display:flex;align-items:flex-end;gap:12px;padding:9px 12px}
+  .channel .lab{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;align-self:flex-start;margin-top:8px;writing-mode:vertical-rl;transform:rotate(180deg)}
   .ch{display:flex;flex-direction:column;align-items:center;gap:3px}
-  .ch .chN{font-size:8px;color:#6e5f92;letter-spacing:1px}
-  .ch input[type=range]{writing-mode:vertical-lr;direction:rtl;width:26px;height:74px;accent-color:#b06cff;cursor:pointer}
-  .ch .chV{font-size:8px;color:#b9acdd}
+  .ch .chN{font-size:8px;color:var(--faint);letter-spacing:.12em}
+  .ch input[type=range]{writing-mode:vertical-lr;direction:rtl;width:22px;height:70px;accent-color:var(--accent);cursor:pointer}
+  .ch .chV{font-size:8.5px;color:var(--dim);font-variant-numeric:tabular-nums}
   #keys{display:flex;gap:3px}
-  .key{width:38px;height:42px;border-radius:6px;background:#191527;border:1px solid #332b4e;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#8f83b3;cursor:pointer}
-  .key b{font-size:13px;color:#d8c8f2}
-  .key:active,.key.hold{background:linear-gradient(180deg,#ff2e8844,#ff2e8811);border-color:#ff5da8;color:#fff;box-shadow:0 0 12px rgba(255,46,136,.5)}
+  .key{width:40px;height:44px;border-radius:var(--r-sm);background:#10141b;border:1px solid var(--edge);border-top:2px solid #31374a;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:var(--faint);cursor:pointer;transition:all .08s}
+  .key b{font-size:13px;color:var(--ink)}
+  .key:hover{border-color:#3d4452;color:var(--dim)}
+  .key:active,.key.hold{background:rgba(79,157,255,.16);border-color:var(--accent);color:var(--accentInk);transform:translateY(1px)}
   .ops{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-  #vu{width:150px;height:16px;border-radius:4px;overflow:hidden;background:#0d0b15;border:1px solid #2c2540}
+  #vu{width:150px;height:14px;border-radius:var(--r-sm);overflow:hidden;background:#0c0f14;border:1px solid var(--edge)}
   #vu canvas{width:100%;height:100%;display:block}
-  .segRow{display:flex;align-items:center;gap:8px;margin-top:2px}
-  .segRow .lab{font-size:8.5px;color:#6e5f92;letter-spacing:1px}
-  @media (max-width:1050px){.mods{grid-template-columns:repeat(2,1fr)}}
+  .segRow{display:flex;align-items:center;gap:7px;margin-top:2px}
+  .segRow .lab{font-size:8.5px;color:var(--faint);letter-spacing:.1em;white-space:nowrap}
+  @keyframes ledPulse{0%,100%{opacity:1}50%{opacity:.45}}
+  @media (max-width:1150px){.mods{grid-template-columns:repeat(2,1fr)}.mVo,.mFi,.mNo,.mSp,.mDr{grid-column:span 1}}
+  @media (max-width:760px){.mods{grid-template-columns:1fr}.sub{display:none}}
+  @media (prefers-reduced-motion:reduce){.brandLed.on,.rackH .led.on{animation:none}.key,.seg button,.pb{transition:none}}
 </style>
 </head>
 <body>
 <header>
-  <h1>DRONE LAB <small>MK·II</small></h1>
-  <span style="font-size:10px;color:#6e5f92">嗡鸣合成器 // 电子制噪工作站</span>
-  <span id="patchName" style="margin-left:auto">未通电</span>
+  <span class="brandLed"></span>
+  <h1>Drone Lab <small>MK·II</small></h1>
+  <span class="sub">嗡鸣合成器 · 电子制噪工作站</span>
+  <span id="patchName">未通电</span>
 </header>
 
 <div id="stage">
@@ -94,20 +148,19 @@
   </div>
 </div>
 
-<div id="presetRow" class="rack" style="margin:8px 12px 0;align-items:center;gap:10px;display:flex">
-  <span style="font-size:9px;letter-spacing:2px;color:#6e5f92">音色库 PATCH</span>
+<div id="presetRow" class="rack">
+  <span class="lab">音色库 PATCH</span>
   <button class="pb on" data-p="haino">😱 灰野敬二</button>
   <button class="pb" data-p="nanjo">🎸 南条麻人</button>
   <button class="pb" data-p="acid">🚀 酸母寺</button>
   <button class="pb" data-p="naoki">🌫️ 头士奈生树</button>
-  <span style="flex:1"></span>
-  <span style="font-size:9px;color:#6e5f92">⏎ 双击旋钮复位 · 拖动 = 调节</span>
+  <span class="rightHint">双击旋钮复位 · 拖动调节</span>
 </div>
 
 <div id="panel">
   <div class="mods">
     <!-- VOICE -->
-    <div class="rack">
+    <div class="rack mVo">
       <div class="rackH"><span class="led" id="ledVoice"></span>VOICE · 声源</div>
       <div class="rackB">
         <div class="c" style="flex-direction:column">
@@ -127,25 +180,25 @@
             </div>
           </div>
         </div>
-        <div class="knobWrap" data-knob="detune" data-c="#ffd166"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DETUNE</span><span class="knobV">1.0×</span></div>
+        <div class="knobWrap" data-knob="detune"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DETUNE</span><span class="knobV">1.0×</span></div>
       </div>
     </div>
     <!-- FILTER -->
-    <div class="rack">
+    <div class="rack mFi">
       <div class="rackH"><span class="led" id="ledFilter"></span>FILTER · 滤波</div>
       <div class="rackB">
-        <div class="knobWrap" data-knob="cutoff" data-c="#6ec6ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">CUTOFF</span><span class="knobV">2.4k</span></div>
-        <div class="knobWrap" data-knob="res" data-c="#6ec6ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">RESO</span><span class="knobV">0.6</span></div>
-        <div class="knobWrap" data-knob="lfospd" data-c="#9be8d8"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">LFO 速率</span><span class="knobV">0.06</span></div>
-        <div class="knobWrap" data-knob="lfoamt" data-c="#9be8d8"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">LFO 深度</span><span class="knobV">22%</span></div>
+        <div class="knobWrap" data-knob="cutoff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">CUTOFF</span><span class="knobV">2.4k</span></div>
+        <div class="knobWrap" data-knob="res"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">RESO</span><span class="knobV">0.6</span></div>
+        <div class="knobWrap" data-knob="lfospd"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">LFO 速率</span><span class="knobV">0.06</span></div>
+        <div class="knobWrap" data-knob="lfoamt"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">LFO 深度</span><span class="knobV">22%</span></div>
       </div>
     </div>
     <!-- NOISE -->
-    <div class="rack">
+    <div class="rack mNo">
       <div class="rackH"><span class="led" id="ledNoise"></span>NOISE · 噪声</div>
       <div class="rackB">
-        <div class="knobWrap" data-knob="noiselvl" data-c="#ff8c5a"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">电平</span><span class="knobV">0</span></div>
-        <div class="knobWrap" data-knob="noisetone" data-c="#ff8c5a"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">TONE 音色</span><span class="knobV">500</span></div>
+        <div class="knobWrap" data-knob="noiselvl"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">电平</span><span class="knobV">0</span></div>
+        <div class="knobWrap" data-knob="noisetone"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">TONE 音色</span><span class="knobV">500</span></div>
         <div class="c" style="flex-direction:column;justify-content:center">
           <div class="segRow"><span class="lab">类型</span>
             <div class="seg" id="noiseTypeSeg">
@@ -156,23 +209,23 @@
       </div>
     </div>
     <!-- SPACE -->
-    <div class="rack">
+    <div class="rack mSp">
       <div class="rackH"><span class="led" id="ledSpace"></span>SPACE · 空间</div>
       <div class="rackB">
-        <div class="knobWrap" data-knob="size" data-c="#b06cff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">SIZE 厅堂</span><span class="knobV">3.2s</span></div>
-        <div class="knobWrap" data-knob="mix" data-c="#b06cff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">MIX 干湿</span><span class="knobV">40</span></div>
-        <div class="knobWrap" data-knob="dtime" data-c="#8fd8ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DELAY 回声</span><span class="knobV">0.42s</span></div>
-        <div class="knobWrap" data-knob="dfb" data-c="#8fd8ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">回授</span><span class="knobV">42</span></div>
+        <div class="knobWrap" data-knob="size"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">SIZE 厅堂</span><span class="knobV">3.2s</span></div>
+        <div class="knobWrap" data-knob="mix"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">MIX 干湿</span><span class="knobV">40</span></div>
+        <div class="knobWrap" data-knob="dtime"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DELAY 回声</span><span class="knobV">0.42s</span></div>
+        <div class="knobWrap" data-knob="dfb"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">回授</span><span class="knobV">42</span></div>
       </div>
     </div>
     <!-- DRIVE + MASTER -->
-    <div class="rack">
+    <div class="rack mDr">
       <div class="rackH"><span class="led g" id="ledMaster"></span>DRIVE / MASTER · 输出</div>
       <div class="rackB">
-        <div class="knobWrap" data-knob="drive" data-c="#ff5a5a"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DRIVE 驱动</span><span class="knobV">90</span></div>
-        <div class="knobWrap" data-knob="out" data-c="#eaff6e"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">OUTPUT</span><span class="knobV">85</span></div>
+        <div class="knobWrap" data-knob="drive"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DRIVE 驱动</span><span class="knobV">90</span></div>
+        <div class="knobWrap" data-knob="out"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">OUTPUT</span><span class="knobV">85</span></div>
         <div class="c" style="flex-direction:column;align-items:center;gap:5px">
-          <span style="font-size:8.5px;color:#6e5f92;letter-spacing:1px">电平</span>
+          <span class="knobL">电平</span>
           <div id="vu"><canvas id="vuC"></canvas></div>
         </div>
       </div>
@@ -180,8 +233,8 @@
   </div>
 
   <div class="bottomRow">
-    <div class="channel rack" style="padding:8px 12px">
-      <span style="font-size:9px;letter-spacing:2px;color:#6e5f92;align-self:flex-start;margin-top:6px">通道 CH</span>
+    <div class="channel rack">
+      <span class="lab">通道 CH</span>
       <div class="ch"><span class="chN">DRONE</span><input type="range" id="chDrone" min="0" max="100" value="80" orient="vertical"><span class="chV" id="vDrone">80</span></div>
       <div class="ch"><span class="chN">PAD</span><input type="range" id="chPad" min="0" max="100" value="55" orient="vertical"><span class="chV" id="vPad">55</span></div>
       <div class="ch"><span class="chN">NOISE</span><input type="range" id="chNoise" min="0" max="100" value="20" orient="vertical"><span class="chV" id="vNoise">20</span></div>
@@ -770,6 +823,8 @@ document.getElementById('startBtn').addEventListener('click', function(){
   ctx.resume();
   state.playing = true;
   document.getElementById('wake').style.display = 'none';
+  document.querySelectorAll('.rackH .led').forEach(function(l){ l.classList.add('on'); });
+  document.querySelector('.brandLed').classList.add('on');
   applyPatch('haino');
   applyPatchKnobSync();
   toast('嗡鸣开始 · A~H 换根音 · Space 爆发');
