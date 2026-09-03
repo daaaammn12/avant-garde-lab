@@ -4,111 +4,221 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
-<title>DRONE LAB · 嗡鸣实验室</title>
+<title>DRONE LAB MK·II · 嗡鸣合成器</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
-    background:#03040a radial-gradient(900px 500px at 50% -10%, rgba(90,0,120,.25), transparent 60%) no-repeat;
-    color:#d8cce8;font-family:"Cascadia Code","JetBrains Mono",Consolas,Menlo,monospace;
-    display:flex;flex-direction:column;overflow:hidden;user-select:none;
+    background:#0a0912;
+    color:#cfc7e6;font-family:"Cascadia Code","JetBrains Mono",Consolas,Menlo,monospace;
+    display:flex;flex-direction:column;overflow:hidden;user-select:none;font-size:12px;
   }
-  header{display:flex;align-items:baseline;gap:14px;padding:14px 22px 8px;border-bottom:1px solid rgba(180,120,255,.15)}
-  h1{font-size:21px;letter-spacing:.22em;font-weight:900;color:#efe6ff;text-shadow:0 0 18px rgba(200,140,255,.55),2px 0 rgba(255,60,120,.5),-2px 0 rgba(0,255,220,.5)}
-  .sub{font-size:11px;color:#7d6a99;letter-spacing:.5px}
-  #stage{flex:1;position:relative;min-height:0;margin:8px 16px 4px;border:1px solid rgba(180,120,255,.18);border-radius:12px;overflow:hidden;background:#000}
+  /* ===== 机架 ===== */
+  .rack{background:linear-gradient(180deg,#16131f,#0e0c15);border:1px solid #2a2440;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02),0 6px 22px rgba(0,0,0,.5)}
+  .rackH{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid #231e36;font-size:10px;letter-spacing:2px;color:#8f83b3}
+  .rackH .led{width:7px;height:7px;border-radius:50%;background:#3a3352;box-shadow:none}
+  .rackH .led.on{background:#ff2e88;box-shadow:0 0 8px #ff2e88}
+  .rackH .led.g{background:#00e0a8;box-shadow:0 0 8px #00e0a8}
+  .rackB{padding:10px 12px}
+  /* ===== 旋钮 ===== */
+  .knobWrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;cursor:ns-resize}
+  .knob{width:46px;height:46px;border-radius:50%;position:relative;background:radial-gradient(circle at 35% 30%,#2c2540,#151221 70%);border:1px solid #3c3358;box-shadow:0 3px 8px rgba(0,0,0,.6),inset 0 0 6px rgba(0,0,0,.7)}
+  .knob .arc{position:absolute;inset:2px;border-radius:50%;background:conic-gradient(from -130deg, var(--c,#b06cff) calc(var(--v,0)*280deg), rgba(255,255,255,.06) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));opacity:.9}
+  .knob .ptr{position:absolute;left:50%;bottom:50%;width:2.5px;height:34%;transform-origin:50% 100%;transform:translateX(-50%) rotate(calc(var(--v,0)*280deg - 140deg));background:#f4ecff;border-radius:2px;box-shadow:0 0 6px rgba(200,150,255,.8)}
+  .knob.drag{box-shadow:0 0 16px rgba(176,108,255,.55),0 3px 8px rgba(0,0,0,.6)}
+  .knobL{font-size:9px;color:#8f83b3;letter-spacing:.5px;white-space:nowrap}
+  .knobV{font-size:10px;color:#e6dcff;font-weight:700}
+  .knobWrap.ledOn .led-dot{width:5px;height:5px;border-radius:50%;background:#00e0a8;box-shadow:0 0 6px #00e0a8}
+  /* ===== 分段按钮 / 主按钮 ===== */
+  .seg{display:flex;gap:3px}
+  .seg button{font-family:inherit;font-size:10px;padding:4px 8px;background:#191527;border:1px solid #332b4e;color:#8f83b3;border-radius:5px;cursor:pointer;letter-spacing:.5px}
+  .seg button.on{background:linear-gradient(180deg,#7a3dff22,#5a2bd822);border-color:#a06bff;color:#e8dcff;box-shadow:0 0 10px rgba(160,107,255,.3)}
+  .seg button:hover{color:#fff}
+  .pb{font-family:inherit;font-size:11px;padding:6px 10px;background:#191527;border:1px solid #332b4e;color:#b9acdd;border-radius:6px;cursor:pointer}
+  .pb:hover{background:#241d38;color:#fff}
+  .pb.on{background:linear-gradient(180deg,#ff2e8822,#ff2e8811);border-color:#ff5da8;color:#ffc2dd;box-shadow:0 0 10px rgba(255,46,136,.35)}
+  .pb.burst{background:#2a1116;border-color:#ff5a5a;color:#ffb9b9}
+  .pb.burst:hover{background:#3d1419;box-shadow:0 0 14px rgba(255,90,90,.5)}
+  /* ===== 布局 ===== */
+  header{display:flex;align-items:center;gap:14px;padding:9px 16px;border-bottom:1px solid #221d36}
+  h1{font-size:16px;letter-spacing:.24em;font-weight:900;color:#f2eaff;text-shadow:0 0 14px rgba(176,108,255,.6)}
+  h1 small{font-size:9px;color:#7a6b9e;letter-spacing:2px;vertical-align:super}
+  #patchName{margin-left:auto;font-size:11px;color:#b06cff;letter-spacing:1px}
+  #stage{flex:1;position:relative;min-height:0;margin:8px 12px 0;border:1px solid #2a2440;border-radius:10px;overflow:hidden;background:#000}
   #viz{position:absolute;inset:0;width:100%;height:100%}
-  #toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:rgba(20,6,34,.9);border:1px solid rgba(220,150,255,.6);color:#e6d2ff;padding:8px 18px;font-size:12px;border-radius:8px;opacity:0;transition:opacity .3s;z-index:9;pointer-events:none;letter-spacing:1px;white-space:nowrap}
+  #wake{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(10,9,18,.78)}
+  #wake button{font-family:inherit;font-size:18px;letter-spacing:3px;padding:15px 38px;border-radius:10px;cursor:pointer;background:linear-gradient(180deg,#2b1c55,#1a1138);border:1px solid #8a5cf5;color:#e9dcff;box-shadow:0 0 26px rgba(150,90,255,.45)}
+  #wake .wsub{font-size:11px;color:#6e5f92}
+  #toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(20,12,40,.92);border:1px solid rgba(200,140,255,.5);color:#e6d2ff;padding:6px 16px;font-size:11px;border-radius:8px;opacity:0;transition:opacity .25s;z-index:9;pointer-events:none;letter-spacing:1px;white-space:nowrap}
   #toast.on{opacity:1}
-  .hint{position:absolute;left:12px;bottom:9px;font-size:10.5px;color:rgba(190,160,225,.45);letter-spacing:.5px;z-index:5;pointer-events:none}
-  #panel{padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px}
-  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .g{font-size:10px;color:#7d6a99;letter-spacing:2px;margin-right:2px}
-  button{font-family:inherit;font-size:12px;color:#cfc0e8;background:rgba(140,80,255,.07);border:1px solid rgba(180,120,255,.4);border-radius:8px;padding:8px 12px;cursor:pointer;letter-spacing:.5px;transition:all .12s}
-  button:hover{background:rgba(180,120,255,.2);color:#fff;box-shadow:0 0 14px rgba(180,120,255,.35)}
-  button:active{transform:translateY(1px)}
-  button.on{background:rgba(255,70,140,.22);border-color:rgba(255,70,140,.75);color:#ffd2e4;box-shadow:0 0 14px rgba(255,70,140,.4)}
-  .presets{display:flex;gap:8px;flex-wrap:wrap}
-  .presets button{padding:7px 14px;font-size:13px}
-  .presets small{display:block;font-size:9px;color:#8a7aa5;letter-spacing:1px}
-  .knobRow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-  .knob{display:flex;align-items:center;gap:7px;font-size:11px;color:#a28fbe}
-  .knob input[type=range]{width:90px;accent-color:#c26bff;cursor:pointer}
-  .knob b{color:#e8dbff;font-weight:600;min-width:26px;text-align:right;font-size:11px}
-  #burstBtn{background:rgba(255,60,60,.1);border-color:rgba(255,80,80,.7);color:#ffc2c2;font-size:13px;padding:8px 20px;box-shadow:0 0 18px rgba(255,60,60,.15) inset}
-  #burstBtn:hover{background:rgba(255,60,60,.3);box-shadow:0 0 24px rgba(255,60,60,.5)}
-  #keys{display:flex;gap:4px}
-  .key{width:44px;height:46px;border-radius:7px;background:rgba(120,80,190,.1);border:1px solid rgba(170,120,240,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:#b9a6d6;cursor:pointer;transition:all .08s}
-  .key b{font-size:15px;color:#e8dbff}
-  .key:active,.key.hold{background:rgba(255,70,140,.35);border-color:rgba(255,70,140,.9);color:#fff;box-shadow:0 0 16px rgba(255,70,140,.5)}
-  .vols{display:flex;gap:16px}
-  .vol{display:flex;align-items:center;gap:6px;font-size:11px;color:#a28fbe}
-  .vol input{width:70px;accent-color:#c26bff;cursor:pointer}
-  #wake{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(3,4,10,.72);backdrop-filter:blur(4px)}
-  #wake button{font-size:17px;padding:14px 34px;letter-spacing:2px}
-  #wake .wsub{font-size:12px;color:#7d6a99}
-  .dim{opacity:.35;pointer-events:none}
+  #panel{padding:8px 12px 10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+  #panel::-webkit-scrollbar{width:6px}
+  #panel::-webkit-scrollbar-thumb{background:#2c2540;border-radius:3px}
+  #presetRow{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
+  #presetRow button{padding:6px 13px}
+  .mods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .mods .rack{overflow:hidden}
+  .mods .rackB{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+  .mods .rackB .c{display:flex;gap:9px;align-items:flex-start;flex-wrap:wrap}
+  .bottomRow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end}
+  .channel{display:flex;align-items:flex-end;gap:12px}
+  .ch{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .ch .chN{font-size:8px;color:#6e5f92;letter-spacing:1px}
+  .ch input[type=range]{writing-mode:vertical-lr;direction:rtl;width:26px;height:74px;accent-color:#b06cff;cursor:pointer}
+  .ch .chV{font-size:8px;color:#b9acdd}
+  #keys{display:flex;gap:3px}
+  .key{width:38px;height:42px;border-radius:6px;background:#191527;border:1px solid #332b4e;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#8f83b3;cursor:pointer}
+  .key b{font-size:13px;color:#d8c8f2}
+  .key:active,.key.hold{background:linear-gradient(180deg,#ff2e8844,#ff2e8811);border-color:#ff5da8;color:#fff;box-shadow:0 0 12px rgba(255,46,136,.5)}
+  .ops{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  #vu{width:150px;height:16px;border-radius:4px;overflow:hidden;background:#0d0b15;border:1px solid #2c2540}
+  #vu canvas{width:100%;height:100%;display:block}
+  .segRow{display:flex;align-items:center;gap:8px;margin-top:2px}
+  .segRow .lab{font-size:8.5px;color:#6e5f92;letter-spacing:1px}
+  @media (max-width:1050px){.mods{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <header>
-  <h1>DRONE LAB</h1>
-  <span class="sub">嗡鸣实验室 // 电子制噪 · 三分钟成为灰野敬二</span>
-  <span id="nowPatch" style="margin-left:auto;font-size:11px;color:#c26bff;letter-spacing:1px"></span>
+  <h1>DRONE LAB <small>MK·II</small></h1>
+  <span style="font-size:10px;color:#6e5f92">嗡鸣合成器 // 电子制噪工作站</span>
+  <span id="patchName" style="margin-left:auto">未通电</span>
 </header>
+
 <div id="stage">
   <canvas id="viz"></canvas>
   <div id="toast"></div>
-  <div class="hint">鼠标在画面上横移 = 滤波扫频 · 上下 = 音量 · 点击 = 爆发 ⚡ 按键 A S D F G H = 换根音</div>
   <div id="wake">
-    <button id="startBtn">🎧 进入嗡鸣</button>
-    <div class="wsub">浏览器要你先点一下才出声 · 建议戴耳机 · 音量开小再探索</div>
+    <button id="startBtn">⚡ 通电 · 进入嗡鸣</button>
+    <div class="wsub">浏览器要你先点一下才出声 · 戴耳机 · 旋钮先转小</div>
   </div>
 </div>
+
+<div id="presetRow" class="rack" style="margin:8px 12px 0;align-items:center;gap:10px;display:flex">
+  <span style="font-size:9px;letter-spacing:2px;color:#6e5f92">音色库 PATCH</span>
+  <button class="pb on" data-p="haino">😱 灰野敬二</button>
+  <button class="pb" data-p="nanjo">🎸 南条麻人</button>
+  <button class="pb" data-p="acid">🚀 酸母寺</button>
+  <button class="pb" data-p="naoki">🌫️ 头士奈生树</button>
+  <span style="flex:1"></span>
+  <span style="font-size:9px;color:#6e5f92">⏎ 双击旋钮复位 · 拖动 = 调节</span>
+</div>
+
 <div id="panel">
-  <div class="row presets" id="presetRow">
-    <span class="g">大师预设</span>
-    <button data-p="nanjo">🎸 南条麻人<small>HIGH RISE 音墙</small></button>
-    <button data-p="haino">😱 灰野敬二<small>嚎叫与静默</small></button>
-    <button data-p="acid">🚀 酸母寺<small>太空长音</small></button>
-    <button data-p="naoki">🌫️ 头士奈生树<small>嗡鸣噪匠</small></button>
-  </div>
-  <div class="row">
-    <div class="knobRow">
-      <div class="knob">音墙 <input type="range" id="distKnob" min="0" max="100" value="0"><b>0</b></div>
-      <div class="knob">空间 <input type="range" id="spaceKnob" min="0" max="100" value="40"><b>40</b></div>
-      <div class="knob">噪声 <input type="range" id="noiseKnob" min="0" max="100" value="0"><b>0</b></div>
-      <div class="knob">滤波 <input type="range" id="cutKnob" min="60" max="9000" value="2400"><b>2400</b></div>
-      <button id="burstBtn">💥 爆发（Space）</button>
-      <div class="vols">
-        <div class="vol">低音 <input type="range" id="droneVol" min="0" max="100" value="80"></div>
-        <div class="vol">高音 <input type="range" id="padVol" min="0" max="100" value="55"></div>
-        <div class="vol">麦克 <input type="range" id="micVol" min="0" max="100" value="80"></div>
+  <div class="mods">
+    <!-- VOICE -->
+    <div class="rack">
+      <div class="rackH"><span class="led" id="ledVoice"></span>VOICE · 声源</div>
+      <div class="rackB">
+        <div class="c" style="flex-direction:column">
+          <div class="segRow"><span class="lab">DRONE 波形</span>
+            <div class="seg" id="waveSeg">
+              <button data-w="sawtooth" class="on">锯齿</button><button data-w="square">方波</button><button data-w="triangle">三角</button>
+            </div>
+          </div>
+          <div class="segRow"><span class="lab">PAD 波形</span>
+            <div class="seg" id="padWaveSeg">
+              <button data-w="sawtooth" class="on">锯齿</button><button data-w="square">方波</button><button data-w="sine">正弦</button>
+            </div>
+          </div>
+          <div class="segRow"><span class="lab">OCT</span>
+            <div class="seg" id="octSeg">
+              <button data-o="-1">-1</button><button data-o="0" class="on">0</button><button data-o="1">+1</button>
+            </div>
+          </div>
+        </div>
+        <div class="knobWrap" data-knob="detune" data-c="#ffd166"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DETUNE</span><span class="knobV">1.0×</span></div>
+      </div>
+    </div>
+    <!-- FILTER -->
+    <div class="rack">
+      <div class="rackH"><span class="led" id="ledFilter"></span>FILTER · 滤波</div>
+      <div class="rackB">
+        <div class="knobWrap" data-knob="cutoff" data-c="#6ec6ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">CUTOFF</span><span class="knobV">2.4k</span></div>
+        <div class="knobWrap" data-knob="res" data-c="#6ec6ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">RESO</span><span class="knobV">0.6</span></div>
+        <div class="knobWrap" data-knob="lfospd" data-c="#9be8d8"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">LFO 速率</span><span class="knobV">0.06</span></div>
+        <div class="knobWrap" data-knob="lfoamt" data-c="#9be8d8"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">LFO 深度</span><span class="knobV">22%</span></div>
+      </div>
+    </div>
+    <!-- NOISE -->
+    <div class="rack">
+      <div class="rackH"><span class="led" id="ledNoise"></span>NOISE · 噪声</div>
+      <div class="rackB">
+        <div class="knobWrap" data-knob="noiselvl" data-c="#ff8c5a"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">电平</span><span class="knobV">0</span></div>
+        <div class="knobWrap" data-knob="noisetone" data-c="#ff8c5a"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">TONE 音色</span><span class="knobV">500</span></div>
+        <div class="c" style="flex-direction:column;justify-content:center">
+          <div class="segRow"><span class="lab">类型</span>
+            <div class="seg" id="noiseTypeSeg">
+              <button data-t="pink" class="on">粉噪</button><button data-t="white">白噪</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SPACE -->
+    <div class="rack">
+      <div class="rackH"><span class="led" id="ledSpace"></span>SPACE · 空间</div>
+      <div class="rackB">
+        <div class="knobWrap" data-knob="size" data-c="#b06cff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">SIZE 厅堂</span><span class="knobV">3.2s</span></div>
+        <div class="knobWrap" data-knob="mix" data-c="#b06cff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">MIX 干湿</span><span class="knobV">40</span></div>
+        <div class="knobWrap" data-knob="dtime" data-c="#8fd8ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DELAY 回声</span><span class="knobV">0.42s</span></div>
+        <div class="knobWrap" data-knob="dfb" data-c="#8fd8ff"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">回授</span><span class="knobV">42</span></div>
+      </div>
+    </div>
+    <!-- DRIVE + MASTER -->
+    <div class="rack">
+      <div class="rackH"><span class="led g" id="ledMaster"></span>DRIVE / MASTER · 输出</div>
+      <div class="rackB">
+        <div class="knobWrap" data-knob="drive" data-c="#ff5a5a"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DRIVE 驱动</span><span class="knobV">90</span></div>
+        <div class="knobWrap" data-knob="out" data-c="#eaff6e"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">OUTPUT</span><span class="knobV">85</span></div>
+        <div class="c" style="flex-direction:column;align-items:center;gap:5px">
+          <span style="font-size:8.5px;color:#6e5f92;letter-spacing:1px">电平</span>
+          <div id="vu"><canvas id="vuC"></canvas></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div id="keys"></div>
-    <button id="micBtn" style="margin-left:auto">🎤 嚎叫通道（接麦克风）</button>
-    <button id="silenceBtn">🕳 静默</button>
-    <button id="autoBtn" class="on">▶ 即兴:开</button>
+
+  <div class="bottomRow">
+    <div class="channel rack" style="padding:8px 12px">
+      <span style="font-size:9px;letter-spacing:2px;color:#6e5f92;align-self:flex-start;margin-top:6px">通道 CH</span>
+      <div class="ch"><span class="chN">DRONE</span><input type="range" id="chDrone" min="0" max="100" value="80" orient="vertical"><span class="chV" id="vDrone">80</span></div>
+      <div class="ch"><span class="chN">PAD</span><input type="range" id="chPad" min="0" max="100" value="55" orient="vertical"><span class="chV" id="vPad">55</span></div>
+      <div class="ch"><span class="chN">NOISE</span><input type="range" id="chNoise" min="0" max="100" value="20" orient="vertical"><span class="chV" id="vNoise">20</span></div>
+      <div class="ch"><span class="chN">MIC</span><input type="range" id="chMic" min="0" max="100" value="80" orient="vertical"><span class="chV" id="vMic">80</span></div>
+    </div>
+    <div id="keys" title="A S D F G H 换根音"></div>
+    <div class="ops">
+      <button class="pb burst" id="burstBtn">💥 爆发 (Space)</button>
+      <button class="pb" id="silenceBtn">🕳 静默</button>
+      <button class="pb on" id="autoBtn">▶ 即兴</button>
+      <button class="pb" id="micBtn">🎤 嚎叫通道</button>
+    </div>
   </div>
 </div>
+
 <script>
 (function(){
 'use strict';
-/* ============ 基础 ============ */
 var AC = window.AudioContext || window.webkitAudioContext;
 var ctx = null;
-var master, limiter, bus, dist, filt, spaceSend, conv, delay, delayFb, micBus;
-var droneSub, padSub, cleanMaster, noiseGainNode;
+/* ============ 音频引用 ============ */
+var master, limiter, bus, dist, filt, spaceSend, wetG, dryG, conv, delay, delayFb, delayOut;
+var droneSub, padSub, cleanMaster, noiseGainNode, noiseFilt;
+var lfo, lfoAmtG;
 var analyser, freqData, waveData;
-var state = { p:'haino', playing:false, burst:0, auto:true, micOn:false, root:55, silentUntil:0, silenceTimer:0, glissTimer:0, t:0 };
+/* ============ 状态与参数 ============ */
+var state = { p:'haino', playing:false, burst:0, auto:true, t:0, root:51.9, oct:0, silentUntil:0, silenceTimer:0, glissTimer:0 };
 var droneOscs = [], padOscs = [];
-var noiseSrc = null;
-var patchName = '';
-
-/* ============ 音频图构建 ============ */
+var P = {};   /* 当前参数表（旋钮值） */
+var waveA = 'sawtooth', waveB = 'sawtooth', noiseType = 'pink';
+/* 默认参数 */
+var DEF = { detune:1.0, cutoff:2400, res:.6, lfospd:.06, lfoamt:.22, noiselvl:0, noisetone:500,
+            size:3.2, mix:40, dtime:.42, dfb:42, drive:90, out:85 };
+for (var k in DEF) P[k] = DEF[k];
+/* 预设根音 */
+var PATCHROOT = { haino:51.9, nanjo:45.9, acid:55, naoki:36.7 };
+/* ============ 音频构建 ============ */
 function makeNoise(seconds, pink){
   var len = Math.floor(ctx.sampleRate * seconds);
   var b = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -125,178 +235,306 @@ function makeNoise(seconds, pink){
   }
   return b;
 }
-function makeImpulse(seconds, decay){
+function makeImpulse(seconds){
   var len = Math.floor(ctx.sampleRate * seconds);
   var b = ctx.createBuffer(2, len, ctx.sampleRate);
   for (var c = 0; c < 2; c++){
     var d = b.getChannelData(c);
     for (var i = 0; i < len; i++){
-      var t = i / len;
-      d[i] = (Math.random()*2-1) * Math.pow(1 - t, decay) * 3;
+      var tt = i / len;
+      d[i] = (Math.random()*2-1) * Math.pow(1 - tt, 2.4) * 3.4;
     }
   }
   return b;
-}
-function initAudio(){
-  if (ctx) return;
-  ctx = new AC();
-  limiter = ctx.createDynamicsCompressor();
-  limiter.threshold.value = -10; limiter.ratio.value = 16; limiter.knee.value = 4;
-  limiter.attack.value = 0.002; limiter.release.value = .18;
-  limiter.connect(ctx.destination);
-  master = ctx.createGain(); master.gain.value = .85; master.connect(limiter);
-  /* 总线 → 失真 → 滤波 → 空间发送 + 干声 */
-  bus = ctx.createGain(); bus.gain.value = 1;
-  dist = ctx.createWaveShaper();
-  dist.curve = makeTanh(420);
-  dist.oversample = '4x';
-  filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.frequency.value = 2400; filt.Q.value = .6;
-  bus.connect(dist); dist.connect(filt); filt.connect(master);
-  /* 纯净通道：衬垫/空间走这里，避开失真 */
-  cleanMaster = ctx.createGain(); cleanMaster.gain.value = .9; cleanMaster.connect(master);
-  /* 声部分组 */
-  droneSub = ctx.createGain(); droneSub.gain.value = .8; droneSub.connect(bus);
-  padSub = ctx.createGain(); padSub.gain.value = .55;
-  padSub.connect(cleanMaster);
-  /* 空间：卷积混响(长指数衰减) + 反馈延迟 */
-  conv = ctx.createConvolver();
-  conv.buffer = makeImpulse(3.2, 2.6);
-  spaceSend = ctx.createGain(); spaceSend.gain.value = .5;
-  var wet = ctx.createGain(); wet.gain.value = .9;
-  filt.connect(spaceSend); spaceSend.connect(conv); conv.connect(wet); wet.connect(master);
-  padSub.connect(spaceSend);   /* 衬垫进空间（需在 spaceSend 就绪后） */
-  delay = ctx.createDelay(1.2); delay.delayTime.value = .42;
-  delayFb = ctx.createGain(); delayFb.gain.value = .42;
-  var delayOut = ctx.createGain(); delayOut.gain.value = .5;
-  filt.connect(delay); delay.connect(delayFb); delayFb.connect(delay);
-  delay.connect(delayOut); delayOut.connect(master);
-  /* 噪声层 */
-  noiseSrc = ctx.createBufferSource();
-  noiseSrc.buffer = makeNoise(4, true); noiseSrc.loop = true;
-  noiseGainNode = ctx.createGain(); noiseGainNode.gain.value = 0;
-  var noiseFilt = ctx.createBiquadFilter(); noiseFilt.type = 'bandpass'; noiseFilt.frequency.value = 500; noiseFilt.Q.value = 1;
-  noiseSrc.connect(noiseFilt); noiseFilt.connect(noiseGainNode); noiseGainNode.connect(bus); noiseSrc.start();
-  /* 麦克风嚎叫通道：mic → 高通 → 反馈延迟(自激潜力) → 主混响 */
-  micBus = ctx.createGain(); micBus.gain.value = 0;
-  var micHP = ctx.createBiquadFilter(); micHP.type = 'highpass'; micHP.frequency.value = 220;
-  var micDelay = ctx.createDelay(1.4); micDelay.delayTime.value = .27;
-  var micFb = ctx.createGain(); micFb.gain.value = .6;
-  var micDelayOut = ctx.createGain(); micDelayOut.gain.value = .85;
-  micBus.connect(micHP);
-  micHP.connect(micDelay); micDelay.connect(micFb); micFb.connect(micDelay);
-  micHP.connect(micDelayOut); micDelay.connect(micDelayOut);
-  micDelayOut.connect(spaceSend); micDelayOut.connect(master);
-  micHP.connect(spaceSend);
-  analyser = ctx.createAnalyser(); analyser.fftSize = 1024;
-  master.connect(analyser);
-  freqData = new Uint8Array(analyser.frequencyBinCount);
-  waveData = new Uint8Array(analyser.fftSize);
 }
 function makeTanh(n){
   var c = new Float32Array(n);
   for (var i = 0; i < n; i++){
     var x = i * 2 / n - 1;
-    c[i] = Math.tanh(3.2 * x);
+    c[i] = Math.tanh((3.2 * n / 420) * x);
   }
   return c;
 }
+function initAudio(){
+  if (ctx) return;
+  ctx = new AC();
+  limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -10; limiter.ratio.value = 18; limiter.attack.value = .002; limiter.release.value = .18;
+  limiter.connect(ctx.destination);
+  master = ctx.createGain(); master.gain.value = .85; master.connect(limiter);
+  bus = ctx.createGain();
+  dist = ctx.createWaveShaper(); dist.curve = makeTanh(430); dist.oversample = '4x';
+  filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.frequency.value = P.cutoff; filt.Q.value = P.res;
+  dryG = ctx.createGain();
+  bus.connect(dist); dist.connect(filt); filt.connect(dryG); dryG.connect(master);
+  cleanMaster = ctx.createGain(); cleanMaster.gain.value = .9; cleanMaster.connect(master);
+  droneSub = ctx.createGain(); droneSub.gain.value = .8; droneSub.connect(bus);
+  padSub = ctx.createGain(); padSub.gain.value = .55; padSub.connect(cleanMaster);
+  /* 空间：可重建卷积 */
+  conv = ctx.createConvolver(); conv.buffer = makeImpulse(P.size);
+  spaceSend = ctx.createGain();
+  wetG = ctx.createGain();
+  filt.connect(spaceSend); spaceSend.connect(conv); conv.connect(wetG); wetG.connect(master);
+  padSub.connect(spaceSend);
+  /* 滤波 LFO */
+  lfo = ctx.createOscillator(); lfo.frequency.value = P.lfospd;
+  lfoAmtG = ctx.createGain(); lfoAmtG.gain.value = P.lfoamt * P.cutoff;
+  lfo.connect(lfoAmtG); lfoAmtG.connect(filt.frequency); lfo.start();
+  /* 延迟 */
+  delay = ctx.createDelay(1.4); delay.delayTime.value = P.dtime;
+  delayFb = ctx.createGain(); delayFb.gain.value = P.dfb / 100 * .9;
+  delayOut = ctx.createGain(); delayOut.gain.value = .5;
+  filt.connect(delay); delay.connect(delayFb); delayFb.connect(delay);
+  delay.connect(delayOut); delayOut.connect(master);
+  setWetDry(P.mix);
+  /* 噪声 */
+  makeNoiseChain();
+  analyser = ctx.createAnalyser(); analyser.fftSize = 1024;
+  master.connect(analyser);
+  freqData = new Uint8Array(analyser.frequencyBinCount);
+  waveData = new Uint8Array(analyser.fftSize);
+  applyDrive(P.drive);
+}
+function makeNoiseChain(){
+  if (noiseGainNode){ try{ noiseSrcStop(); }catch(e){} }
+  var src = ctx.createBufferSource();
+  src.buffer = makeNoise(4, noiseType === 'pink');
+  src.loop = true;
+  noiseGainNode = ctx.createGain(); noiseGainNode.gain.value = P.noiselvl / 100 * .5;
+  noiseFilt = ctx.createBiquadFilter(); noiseFilt.type = 'bandpass';
+  noiseFilt.frequency.value = P.noisetone; noiseFilt.Q.value = .9;
+  src.connect(noiseFilt); noiseFilt.connect(noiseGainNode); noiseGainNode.connect(bus);
+  src.start();
+  noiseSrcStop = function(){ try{ src.stop(); src.disconnect(); }catch(e){} };
+}
+var noiseSrcStop = function(){};
+function semisToHz(root, s){ return root * Math.pow(2, s / 12); }
 function killOscs(arr){
   arr.forEach(function(o){ try{ o.stop(); }catch(e){} try{ o.disconnect(); }catch(e){} });
   arr.length = 0;
 }
-function setDist(v){
-  /* 0..1 → tanh 强度 0..14 */
-  if (ctx) dist.curve = makeTanh(Math.round(24 + v * 410));
-}
 /* ============ 预设 ============ */
-var PRESETS = {
-  nanjo: { name:'南条麻人 · HIGH RISE 音墙', root:45.9,   dist:.62, space:.5,  noise:.1, cut:2600,
-    drone:[{s:0,t:'sawtooth',g:.16,d:9},{s:.02,t:'sawtooth',g:.14,d:-7},{s:7,t:'sawtooth',g:.10,d:14},{s:-12,t:'square',g:.12,d:3}],
-    pad:[{s:12,t:'sawtooth',g:.05,d:5},{s:24,t:'sawtooth',g:.04,d:-8}], lfo:0.07, script:'bluesy' },
-  haino:  { name:'灰野敬二 · 嚎叫与静默', root:51.9,   dist:.9,  space:.85, noise:.28, cut:5200,
+var PATCHES = {
+  haino: { name:'😱 灰野敬二 · 嚎叫与静默', root:51.9, P:{drive:92, cutoff:5200, res:2.4, mix:78, size:4.0, noiselvl:26, noisetone:1500, lfospd:.5, lfoamt:.5, dtime:.27, dfb:62, detune:1.8},
     drone:[{s:0,t:'sawtooth',g:.19,d:23},{s:.5,t:'sawtooth',g:.17,d:-19},{s:6,t:'square',g:.11,d:0},{s:-6,t:'sawtooth',g:.10,d:31}],
-    pad:[{s:13,t:'sawtooth',g:.06,d:40},{s:1,t:'sine',g:.10,d:0}], lfo:0.5, script:'haino' },
-  acid:   { name:'酸母寺 · 太空长音', root:55,     dist:.12, space:.9,  noise:.05, cut:3600,
+    pad:[{s:13,t:'sawtooth',g:.06,d:40},{s:1,t:'sine',g:.10,d:0}], script:'haino', wave:'sawtooth' },
+  nanjo: { name:'🎸 南条麻人 · HIGH RISE 音墙', root:45.9, P:{drive:60, cutoff:2600, res:.8, mix:45, size:3.0, noiselvl:8, noisetone:800, lfospd:.08, lfoamt:.3, dtime:.42, dfb:36, detune:.9},
+    drone:[{s:0,t:'sawtooth',g:.16,d:9},{s:.02,t:'sawtooth',g:.14,d:-7},{s:7,t:'sawtooth',g:.10,d:14},{s:-12,t:'square',g:.12,d:3}],
+    pad:[{s:12,t:'sawtooth',g:.05,d:5},{s:24,t:'sawtooth',g:.04,d:-8}], script:'bluesy', wave:'sawtooth' },
+  acid:  { name:'🚀 酸母寺 · 太空长音', root:55, P:{drive:12, cutoff:3600, res:.7, mix:85, size:4.5, noiselvl:4, noisetone:900, lfospd:.04, lfoamt:.5, dtime:.6, dfb:48, detune:1.1},
     drone:[{s:0,t:'sawtooth',g:.16,d:7},{s:.02,t:'sawtooth',g:.15,d:-6},{s:7,t:'sine',g:.13,d:0},{s:12,t:'sawtooth',g:.07,d:12}],
-    pad:[{s:19,t:'sine',g:.06,d:0},{s:24,t:'sine',g:.05,d:0},{s:31,t:'sine',g:.04,d:0}], lfo:0.04, script:'cosmic' },
-  naoki:  { name:'头士奈生树 · 嗡鸣噪匠', root:36.7,  dist:.32, space:.6,  noise:.42, cut:1900,
+    pad:[{s:19,t:'sine',g:.06,d:0},{s:24,t:'sine',g:.05,d:0},{s:31,t:'sine',g:.04,d:0}], script:'cosmic', wave:'sawtooth' },
+  naoki: { name:'🌫️ 头士奈生树 · 嗡鸣噪匠', root:36.7, P:{drive:30, cutoff:1900, res:1.2, mix:55, size:3.6, noiselvl:40, noisetone:420, lfospd:.12, lfoamt:.35, dtime:.3, dfb:40, detune:.6},
     drone:[{s:0,t:'triangle',g:.18,d:3},{s:.03,t:'triangle',g:.16,d:-2},{s:-12,t:'triangle',g:.14,d:5}],
-    pad:[{s:9,t:'sine',g:.05,d:0},{s:16,t:'sine',g:.04,d:0}], lfo:0.12, script:'tick' }
+    pad:[{s:9,t:'sine',g:.05,d:0},{s:16,t:'sine',g:.04,d:0}], script:'tick', wave:'triangle' }
 };
-function semisToHz(root, s){ return root * Math.pow(2, s / 12); }
-function applyPreset(id){
+function applyPatch(id){
   state.p = id;
-  var p = PRESETS[id];
-  var now = ctx.currentTime;
-  /* 停旧声部 */
+  var pc = PATCHES[id];
+  state.root = pc.root * Math.pow(2, state.oct);
+  var np = pc.P;
+  for (var k in np) P[k] = np[k];
+  waveA = pc.wave || 'sawtooth';
   killOscs(droneOscs); killOscs(padOscs);
-  setDist(p.dist);
-  filt.frequency.setTargetAtTime(p.cut, now, .4);
-  spaceSend.gain.setTargetAtTime(p.space, now, .5);
-  document.getElementById('noiseKnob').value = Math.round(p.noise * 100);
-  document.getElementById('noiseKnob').dispatchEvent(new Event('input'));
-  /* 低音 drone */
-  p.drone.forEach(function(cfg){
+  if (!ctx) return;
+  var now = ctx.currentTime;
+  pc.drone.forEach(function(cfg){
     var o = ctx.createOscillator();
-    o.type = cfg.t;
+    o.type = waveA;
     o.frequency.value = semisToHz(state.root, cfg.s);
-    o.detune.value = cfg.d;
+    o._bd = cfg.d;
+    o.detune.value = cfg.d * P.detune;
     var g = ctx.createGain(); g.gain.value = cfg.g;
     o.connect(g); g.connect(droneSub);
     o.start();
     droneOscs.push(o);
   });
-  /* 高音衬垫（纯净通道 + 空间） */
-  p.pad.forEach(function(cfg){
+  pc.pad.forEach(function(cfg){
     var o = ctx.createOscillator();
-    o.type = cfg.t;
+    o.type = cfg.t === 'sine' ? 'sine' : waveB;
     o.frequency.value = semisToHz(state.root, cfg.s);
-    o.detune.value = cfg.d;
+    o._bd = cfg.d;
+    o.detune.value = cfg.d * P.detune;
     var g = ctx.createGain(); g.gain.value = cfg.g;
     o.connect(g); g.connect(padSub);
     o.start();
     padOscs.push(o);
   });
-  /* 同步旋钮显示 */
-  document.getElementById('distKnob').value = Math.round(p.dist * 100);
-  document.getElementById('distKnob').parentElement.querySelector('b').textContent = Math.round(p.dist * 100);
-  document.getElementById('spaceKnob').value = Math.round(p.space * 100);
-  document.getElementById('spaceKnob').parentElement.querySelector('b').textContent = Math.round(p.space * 100);
-  document.getElementById('cutKnob').value = Math.round(p.cut);
-  document.getElementById('cutKnob').parentElement.querySelector('b').textContent = Math.round(p.cut);
-  /* 调 LFO 呼吸（滤波慢摆） */
-  filt.frequency.cancelScheduledValues(now);
-  var lfo = ctx.createOscillator(); lfo.frequency.value = p.lfo;
-  var lfoG = ctx.createGain(); lfoG.gain.value = p.cut * .22;
-  lfo.connect(lfoG); lfoG.connect(filt.frequency); lfo.start();
-  droneOscs.push(lfo);   /* 借用数组追踪 */
-  patchName = p.name;
-  document.getElementById('nowPatch').textContent = '🎛 ' + p.name;
-  toast('「' + p.name + '」 上路了');
+  state._lastRoot = state.root;
+  applyAllParams();
+  document.getElementById('patchName').textContent = '🎛 ' + pc.name;
+  toast(pc.name + ' 上路了');
 }
-function keyByHz(hz){
-  for (var i = 0; i < KEY_NOTES.length; i++){
-    if (Math.abs(KEY_NOTES[i].hz - hz) < .5) return KEY_NOTES[i];
+/* 参数 → 音频（旋钮/滑杆全部走这里） */
+function applyAllParams(){
+  if (!ctx) return;
+  var now = ctx.currentTime;
+  filt.frequency.setTargetAtTime(P.cutoff, now, .05);
+  filt.Q.setTargetAtTime(P.res, now, .08);
+  lfo.frequency.setTargetAtTime(P.lfospd, now, .1);
+  lfoAmtG.gain.setTargetAtTime(P.lfoamt * P.cutoff, now, .1);
+  droneOscs.forEach(function(o){ if (o.detune) o.detune.setTargetAtTime((o._bd || 8) * P.detune, now, .1); });
+  padOscs.forEach(function(o){ if (o.detune) o.detune.setTargetAtTime((o._bd || 4) * P.detune, now, .1); });
+  if (noiseGainNode) noiseGainNode.gain.setTargetAtTime(P.noiselvl / 100 * .5, now, .05);
+  if (noiseFilt) noiseFilt.frequency.setTargetAtTime(P.noisetone, now, .08);
+  spaceSend.gain.setTargetAtTime(P.mix / 100 * 1.15, now, .08);
+  setWetDry(P.mix);
+  delay.delayTime.setTargetAtTime(P.dtime, now, .1);
+  delayFb.gain.setTargetAtTime(P.dfb / 100 * .9, now, .1);
+  applyDrive(P.drive);
+  master.gain.setTargetAtTime(P.out / 100 * 1.15, now, .06);
+}
+function applyDrive(d){
+  if (ctx) dist.curve = makeTanh(Math.round(20 + d * 4.6));
+}
+function setWetDry(mix){
+  if (!ctx) return;
+  var now = ctx.currentTime;
+  dryG.gain.setTargetAtTime(1 - mix / 100 * .85, now, .1);
+  wetG.gain.setTargetAtTime(mix / 100 * 1.2, now, .1);
+}
+function setImpulseSize(sec){
+  if (!ctx) return;
+  wetG.gain.setTargetAtTime(0.0001, ctx.currentTime, .03);
+  setTimeout(function(){
+    if (!ctx) return;
+    conv.buffer = makeImpulse(sec);
+    wetG.gain.setTargetAtTime(P.mix / 100 * 1.2, ctx.currentTime, .06);
+  }, 60);
+}
+/* ============ 旋钮组件 ============ */
+function setKnobVal(k, v){ P[k] = v; }
+var knobFns = {
+  detune:   function(v){ P.detune = .2 + v * 2.6; applyAllParams(); return (P.detune).toFixed(2) + '×'; },
+  cutoff:   function(v){ P.cutoff = Math.round(60 + Math.pow(v, 1.6) * 9400); applyAllParams(); return fmtHz(P.cutoff); },
+  res:      function(v){ P.res = .5 + v * 24; applyAllParams(); return P.res.toFixed(1); },
+  lfospd:   function(v){ P.lfospd = .03 * Math.pow(60, v); applyAllParams(); return P.lfospd.toFixed(2) + 'Hz'; },
+  lfoamt:   function(v){ P.lfoamt = v; applyAllParams(); return Math.round(v * 100) + '%'; },
+  noiselvl: function(v){ P.noiselvl = Math.round(v * 100); applyAllParams(); return P.noiselvl; },
+  noisetone:function(v){ P.noisetone = Math.round(120 * Math.pow(70, v)); applyAllParams(); return fmtHz(P.noisetone); },
+  size:     function(v){ P.size = .5 + v * 4.3; setImpulseSize(P.size); return P.size.toFixed(1) + 's'; },
+  mix:      function(v){ P.mix = Math.round(v * 100); applyAllParams(); return P.mix; },
+  dtime:    function(v){ P.dtime = .05 + v * .95; applyAllParams(); return P.dtime.toFixed(2) + 's'; },
+  dfb:      function(v){ P.dfb = Math.round(v * 100); applyAllParams(); return P.dfb; },
+  drive:    function(v){ P.drive = Math.round(v * 100); applyAllParams(); return P.drive; },
+  out:      function(v){ P.out = Math.round(20 + v * 110); applyAllParams(); return P.out; }
+};
+function fmtHz(h){ return h >= 1000 ? (h/1000).toFixed(1) + 'k' : Math.round(h); }
+function fmtKnobV(k){ /* 显示当前 */
+  switch(k){
+    case 'detune': return P.detune.toFixed(2) + '×';
+    case 'cutoff': return fmtHz(P.cutoff);
+    case 'res': return P.res.toFixed(1);
+    case 'lfospd': return P.lfospd.toFixed(2);
+    case 'lfoamt': return Math.round(P.lfoamt * 100) + '%';
+    case 'noiselvl': return P.noiselvl;
+    case 'noisetone': return fmtHz(P.noisetone);
+    case 'size': return P.size.toFixed(1) + 's';
+    case 'mix': return P.mix;
+    case 'dtime': return P.dtime.toFixed(2);
+    case 'dfb': return P.dfb;
+    case 'drive': return P.drive;
+    case 'out': return P.out;
   }
-  return null;
+  return '';
 }
-function setRootHz(hz, glide){
-  var oldRoot = state.root || PRESETS[state.p].root;
-  var ratio = hz / oldRoot;
-  state.root = hz;
-  var now = ctx.currentTime, tt = glide ? 0.5 : 0.06;
-  /* 所有声部等比转调，保持音程堆叠 */
-  droneOscs.concat(padOscs).forEach(function(o){
-    if (o.type && o.frequency && o.frequency.value > 0 && o.frequency.value < 8000){
-      o.frequency.cancelScheduledValues(now);
-      o.frequency.setTargetAtTime(Math.max(18, o.frequency.value * ratio), now, tt);
+function knobDefV(k){ /* 旋钮视觉 0..1（需反推当前 P 值） */
+  switch(k){
+    case 'detune': return Math.min(1, Math.max(0, (P.detune - .2) / 2.6));
+    case 'cutoff': return Math.min(1, Math.pow((P.cutoff - 60) / 9400, 1/1.6));
+    case 'res': return Math.min(1, Math.max(0, (P.res - .5) / 24));
+    case 'lfospd': return Math.min(1, Math.log(P.lfospd / .03) / Math.log(60));
+    case 'lfoamt': return P.lfoamt;
+    case 'noiselvl': return P.noiselvl / 100;
+    case 'noisetone': return Math.min(1, Math.log(P.noisetone / 120) / Math.log(70));
+    case 'size': return Math.min(1, Math.max(0, (P.size - .5) / 4.3));
+    case 'mix': return P.mix / 100;
+    case 'dtime': return Math.min(1, Math.max(0, (P.dtime - .05) / .95));
+    case 'dfb': return P.dfb / 100;
+    case 'drive': return P.drive / 100;
+    case 'out': return Math.min(1, Math.max(0, (P.out - 20) / 110));
+  }
+  return .5;
+}
+function initKnobs(){
+  document.querySelectorAll('.knobWrap').forEach(function(w){
+    var k = w.dataset.knob;
+    var arc = w.querySelector('.arc'), ptr = w.querySelector('.ptr'), val = w.querySelector('.knobV');
+    var v = knobDefV(k);
+    arc.style.setProperty('--v', v); ptr.style.setProperty('--v', v);
+    val.textContent = fmtKnobV(k);
+    var dragging = false, lastY = 0;
+    function renderVal(){
+      arc.style.setProperty('--v', v); ptr.style.setProperty('--v', v);
     }
+    w.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      dragging = true; lastY = e.clientY;
+      w.classList.add('drag');
+      w.setPointerCapture(e.pointerId);
+    });
+    w.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      v = Math.min(1, Math.max(0, v - (e.clientY - lastY) / 140));
+      lastY = e.clientY;
+      renderVal();
+      var out = knobFns[k](v);
+      if (out !== undefined) val.textContent = out;
+      knobTick(k);
+    });
+    function up(){ dragging = false; w.classList.remove('drag'); }
+    w.addEventListener('pointerup', up);
+    w.addEventListener('pointercancel', up);
+    w.addEventListener('dblclick', function(){
+      P[k] = DEF[k];
+      v = knobDefV(k);
+      renderVal();
+      applyAllParams();
+      val.textContent = fmtKnobV(k);
+      knobTick(k);
+      toast(k.toUpperCase() + ' 已复位');
+    });
   });
-  var keyName = keyByHz(hz);
-  var el = document.getElementById('nowPatch');
-  if (el && keyName) el.textContent = '🎛 ' + patchName + ' · 根音 ' + keyName.name;
 }
-/* 键盘：A小调低音八度 */
+/* 旋钮微击（确认感） */
+var lastTick = 0;
+function knobTick(k){
+  if (!ctx || !state.playing) return;
+  var now = ctx.currentTime;
+  if (now - lastTick < .05) return;
+  lastTick = now;
+  var o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 900 + P.cutoff * .25;
+  g.gain.setValueAtTime(.022, now);
+  g.gain.exponentialRampToValueAtTime(.0001, now + .04);
+  o.connect(g); g.connect(master);
+  o.start(now); o.stop(now + .06);
+}
+function applyPatchKnobSync(){
+  document.querySelectorAll('.knobWrap').forEach(function(w){
+    var k = w.dataset.knob;
+    var arc = w.querySelector('.arc'), ptr = w.querySelector('.ptr'), val = w.querySelector('.knobV');
+    var v = knobDefV(k);
+    arc.style.setProperty('--v', v); ptr.style.setProperty('--v', v);
+    val.textContent = fmtKnobV(k);
+  });
+}
+/* ============ 波形 / 八度 / 噪声类型 / 通道 ============ */
+function setDroneWave(w){
+  waveA = w;
+  droneOscs.forEach(function(o){ if (o.type && o.frequency.value > 20) o.type = w; });
+}
+function setPadWave(w){
+  waveB = w;
+  padOscs.forEach(function(o){ if (o.type && o.type !== 'sine') o.type = w; });
+}
+function setOct(o){
+  state.oct = o;
+  state.root = PATCHES[state.p].root * Math.pow(2, o);
+  setRootHz(state.root, true);
+}
+/* ============ 换根音 ============ */
 var KEY_NOTES = [
   {k:'a', name:'A', hz:55}, {k:'s', name:'C', hz:65.41}, {k:'d', name:'D', hz:73.42},
   {k:'f', name:'E', hz:82.41}, {k:'g', name:'G', hz:98}, {k:'h', name:'A2', hz:110}
@@ -307,19 +545,32 @@ function renderKeys(){
   KEY_NOTES.forEach(function(n){
     var d = document.createElement('div');
     d.className = 'key';
-    d.innerHTML = '<b>' + n.name + '</b>' + (n.hz > 80 ? '高' : '低');
+    d.innerHTML = '<b>' + n.name + '</b>根音';
     d.addEventListener('pointerdown', function(){
       if (!ctx || !state.playing) return;
       d.classList.add('hold');
-      setRootHz(n.hz, true);
-      if (state.p === 'haino') burst(0.5);
+      setRootHz(n.hz * Math.pow(2, state.oct), true);
+      if (state.p === 'haino') burst(.5);
     });
     d.addEventListener('pointerup', function(){ d.classList.remove('hold'); });
     d.addEventListener('pointerleave', function(){ d.classList.remove('hold'); });
     el.appendChild(d);
   });
 }
-/* ============ 爆发 / 静默 / 即兴脚本 ============ */
+function setRootHz(hz, glide){
+  state.root = hz;
+  if (!ctx) return;
+  var now = ctx.currentTime, tt = glide ? .5 : .08;
+  droneOscs.concat(padOscs).forEach(function(o){
+    if (o.type && o.frequency && o.frequency.value > 0 && o.frequency.value < 9000){
+      var r = hz / (state._lastRoot || hz);
+      o.frequency.cancelScheduledValues(now);
+      o.frequency.setTargetAtTime(Math.max(18, o.frequency.value * r), now, tt);
+    }
+  });
+  state._lastRoot = hz;
+}
+/* ============ 爆发/静默/即兴 ============ */
 function noiseBurst(t0, dur, vol, f0, f1){
   var s = ctx.createBufferSource();
   s.buffer = makeNoise(dur + .2, false);
@@ -328,10 +579,10 @@ function noiseBurst(t0, dur, vol, f0, f1){
   bp.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
   bp.Q.value = 8;
   var g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.setValueAtTime(.0001, t0);
   g.gain.exponentialRampToValueAtTime(vol, t0 + .012);
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  s.connect(bp); bp.connect(g); g.connect(dist);
+  g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  s.connect(bp); bp.connect(g); g.connect(bus);
   s.start(t0); s.stop(t0 + dur + .2);
 }
 function screamGliss(t0, dur){
@@ -340,21 +591,20 @@ function screamGliss(t0, dur){
   var f0 = 300 + Math.random() * 700;
   o.frequency.setValueAtTime(f0, t0);
   o.frequency.exponentialRampToValueAtTime(f0 * (2.2 + Math.random() * 3), t0 + dur * .6);
-  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.setValueAtTime(.0001, t0);
   g.gain.exponentialRampToValueAtTime(.3, t0 + .03);
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
   var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3200;
-  o.connect(lp); lp.connect(g); g.connect(dist);
+  o.connect(lp); lp.connect(g); g.connect(bus);
   o.start(t0); o.stop(t0 + dur + .1);
 }
 function burst(power){
+  if (!ctx) return;
   var t0 = ctx.currentTime;
   state.burst = 1;
-  /* 瞬时把滤波推开再跌落 */
   filt.frequency.cancelScheduledValues(t0);
   filt.frequency.setValueAtTime(Math.max(4000, filt.frequency.value), t0);
-  filt.frequency.exponentialRampToValueAtTime(PRESETS[state.p].cut, t0 + .7);
-  /* 高频炸裂 */
+  filt.frequency.exponentialRampToValueAtTime(P.cutoff, t0 + .7);
   for (var i = 0; i < 4; i++){
     noiseBurst(t0 + i * .012, .05 + Math.random() * .1, .3 + Math.random() * .3, 900 + Math.random() * 4000, 300 + Math.random() * 2500);
   }
@@ -363,42 +613,40 @@ function burst(power){
   setTimeout(function(){ state.burst = 0; }, 500);
 }
 function allMute(on){
-  var g = on ? 0.0001 : .85;
-  master.gain.setTargetAtTime(g, ctx.currentTime, on ? .25 : .08);
+  master.gain.setTargetAtTime(on ? .0001 : P.out / 100 * 1.15, ctx.currentTime, on ? .25 : .1);
   if (!on) state.silentUntil = 0;
 }
 function tick(dt){
   state.burst = Math.max(0, state.burst - dt * 2);
   if (!state.auto || !ctx) return;
   var now = ctx.currentTime;
-  var p = PRESETS[state.p];
-  if (state.silentUntil && now > state.silentUntil){ state.silentUntil = 0; allMute(false); toast('（灰野式：复活）'); }
-  if (p.script === 'haino'){
+  var pc = PATCHES[state.p];
+  if (state.silentUntil && now > state.silentUntil){ state.silentUntil = 0; allMute(false); toast('复活——'); }
+  if (pc.script === 'haino'){
     state.silenceTimer -= dt;
     if (state.silenceTimer <= 0 && !state.silentUntil){
       state.silenceTimer = 1.4 + Math.random() * 3.2;
       var r = Math.random();
       if (r < .3){ state.silentUntil = now + .6 + Math.random() * 1.6; allMute(true); }
       else if (r < .75){ burst(.6 + Math.random() * .5); }
-      else { screamGliss(now + .03, .8 + Math.random() * 1.6); }
+      else screamGliss(now + .03, .8 + Math.random() * 1.6);
     }
-  } else if (p.script === 'cosmic'){
+  } else if (pc.script === 'cosmic'){
     state.glissTimer -= dt;
     if (state.glissTimer <= 0){
       state.glissTimer = 6 + Math.random() * 9;
-      /* 高音滑奏星轨 */
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.type = 'sine';
       var f0 = state.root * 8, f1 = f0 * (2 + Math.random());
       o.frequency.setValueAtTime(f0, now);
       o.frequency.exponentialRampToValueAtTime(f1, now + 2.2);
-      g.gain.setValueAtTime(0.0001, now);
+      g.gain.setValueAtTime(.0001, now);
       g.gain.exponentialRampToValueAtTime(.05, now + .8);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 2.6);
+      g.gain.exponentialRampToValueAtTime(.0001, now + 2.6);
       o.connect(g); g.connect(spaceSend);
       o.start(now); o.stop(now + 3);
     }
-  } else if (p.script === 'bluesy'){
+  } else if (pc.script === 'bluesy'){
     state.glissTimer -= dt;
     if (state.glissTimer <= 0){
       state.glissTimer = 3 + Math.random() * 4;
@@ -408,13 +656,13 @@ function tick(dt){
       bend.frequency.setValueAtTime(f0, now);
       bend.frequency.linearRampToValueAtTime(f0 * 1.06, now + .3);
       bend.frequency.linearRampToValueAtTime(f0, now + .5);
-      bg.gain.setValueAtTime(0.0001, now);
+      bg.gain.setValueAtTime(.0001, now);
       bg.gain.exponentialRampToValueAtTime(.16, now + .02);
-      bg.gain.exponentialRampToValueAtTime(0.0001, now + .55);
-      bend.connect(bg); bg.connect(dist);
+      bg.gain.exponentialRampToValueAtTime(.0001, now + .55);
+      bend.connect(bg); bg.connect(bus);
       bend.start(now); bend.stop(now + .6);
     }
-  } else if (p.script === 'tick'){
+  } else if (pc.script === 'tick'){
     state.glissTimer -= dt;
     if (state.glissTimer <= 0){
       state.glissTimer = .5 + Math.random() * 1.8;
@@ -422,10 +670,12 @@ function tick(dt){
     }
   }
 }
-/* ============ 可视化 ============ */
+/* ============ 可视化 + VU ============ */
 var viz = document.getElementById('viz');
 var vx = viz.getContext('2d');
-var W = 0, H = 0, lastT = 0, mouseX = .5, mouseY = .5;
+var vuC = document.getElementById('vuC');
+var vux = vuC.getContext('2d');
+var W = 0, H = 0, mouseX = .5, mouseY = .5, mouseInside = false;
 function resizeV(){
   var dpr = Math.min(2, window.devicePixelRatio || 1);
   var w = viz.clientWidth, h = viz.clientHeight;
@@ -436,95 +686,101 @@ function drawViz(){
   if (!W) resizeV();
   vx.clearRect(0, 0, W, H);
   var playing = ctx && state.playing;
-  /* 背景：爆发红晕 + 音高辉光 */
-  var grd = vx.createRadialGradient(W * .5, H * .5, 0, W * .5, H * .5, Math.max(W, H) * .6);
-  grd.addColorStop(0, 'rgba(' + (playing ? '30,10,60' : '8,6,20') + ',1)');
+  var grd = vx.createRadialGradient(W * .5, H * .5, 0, W * .5, H * .5, Math.max(W, H) * .62);
+  grd.addColorStop(0, playing ? 'rgba(36,16,62,1)' : 'rgba(10,8,20,1)');
   grd.addColorStop(1, 'rgba(2,2,8,1)');
   vx.fillStyle = grd; vx.fillRect(0, 0, W, H);
   var cx = W * .5, cy = H * .5;
   if (playing){
     analyser.getByteTimeDomainData(waveData);
     analyser.getByteFrequencyData(freqData);
-    var lvl = 0;
-    for (var i = 0; i < 512; i++) lvl += Math.abs(waveData[i] - 128);
-    lvl = lvl / 512 / 128;
-    /* 外圈：频谱茎 */
-    var n = 96;
-    for (var i2 = 0; i2 < n; i2++){
-      var v = freqData[Math.floor(Math.pow(i2 / n, 1.6) * 400)] / 255;
-      var a = i2 / n * Math.PI * 2 + state.t * .4;
-      var r = H * .18 + v * H * .30 * (1 + state.burst * 2);
-      var hue = (state.t * 22 + i2 * 2) % 360;
-      vx.strokeStyle = 'hsla(' + hue + ',90%,' + (55 + v * 20) + '%,' + (.25 + v * .6) + ')';
-      vx.lineWidth = Math.max(1, W / 300);
+    var n = 88;
+    for (var i = 0; i < n; i++){
+      var v = freqData[Math.floor(Math.pow(i / n, 1.55) * 400)] / 255;
+      var a = i / n * Math.PI * 2 + state.t * .35;
+      var r = H * .17 + v * H * .28 * (1 + state.burst * 1.6);
+      vx.strokeStyle = 'hsla(' + (state.t * 18 + i * 2.4) % 360 + ',85%,' + (52 + v * 26) + '%,' + (.22 + v * .65) + ')';
+      vx.lineWidth = Math.max(1, W / 340);
       vx.beginPath();
-      vx.moveTo(cx + Math.cos(a) * H * .17, cy + Math.sin(a) * H * .17);
+      vx.moveTo(cx + Math.cos(a) * H * .16, cy + Math.sin(a) * H * .16);
       vx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
       vx.stroke();
     }
-    /* 中心波形 */
     vx.beginPath();
     for (var k = 0; k < W; k += 3){
       var idx = Math.floor(k / W * 800);
-      var y = cy + (waveData[idx] - 128) / 128 * H * .2 * (1 + lvl);
+      var y = cy + (waveData[idx] - 128) / 128 * H * .18;
       if (k === 0) vx.moveTo(k, y); else vx.lineTo(k, y);
     }
-    vx.strokeStyle = 'rgba(210,240,255,.8)';
-    vx.lineWidth = 2;
+    vx.strokeStyle = 'rgba(225,240,255,.75)'; vx.lineWidth = 2;
     vx.stroke();
-    /* 爆发闪光 */
     if (state.burst > .05){
-      vx.fillStyle = 'rgba(255,80,80,' + state.burst * .25 + ')';
+      vx.fillStyle = 'rgba(255,80,80,' + state.burst * .22 + ')';
       vx.fillRect(0, 0, W, H);
     }
     if (state.silentUntil){
-      vx.fillStyle = 'rgba(0,0,0,' + .55 + ')';
-      vx.fillRect(0, 0, W, H);
+      vx.fillStyle = 'rgba(0,0,0,.6)'; vx.fillRect(0, 0, W, H);
       vx.fillStyle = 'rgba(200,160,255,.5)';
       vx.font = Math.floor(H * .05) + 'px Consolas, monospace';
       vx.textAlign = 'center';
       vx.fillText('静默……', cx, cy);
     }
-    /* 鼠标滤波圈 */
     if (mouseInside){
-      vx.strokeStyle = 'rgba(150,200,255,.25)';
-      vx.lineWidth = 1;
-      vx.beginPath();
-      vx.arc(mouseX * W, mouseY * H, 44, 0, Math.PI * 2);
-      vx.stroke();
+      vx.strokeStyle = 'rgba(150,200,255,.22)'; vx.lineWidth = 1;
+      vx.beginPath(); vx.arc(mouseX * W, mouseY * H, 44, 0, Math.PI * 2); vx.stroke();
     }
   } else {
-    vx.fillStyle = 'rgba(200,160,255,.3)';
-    vx.font = Math.floor(H * .06) + 'px Consolas, monospace';
+    vx.fillStyle = 'rgba(200,160,255,.25)';
+    vx.font = Math.floor(H * .055) + 'px Consolas, monospace';
     vx.textAlign = 'center';
-    vx.fillText('· · · 静 默 · · ·', cx, cy);
+    vx.fillText('· · · 未 通 电 · · ·', cx, cy);
+  }
+  drawVU();
+}
+function drawVU(){
+  if (!vuC) return;
+  var w = vuC.width, h = vuC.height;
+  vux.clearRect(0, 0, w, h);
+  var lvl = 0;
+  if (ctx && state.playing){
+    analyser.getByteTimeDomainData(waveData);
+    var sum = 0;
+    for (var i = 0; i < 512; i += 4){ var d = (waveData[i] - 128) / 128; sum += d * d; }
+    lvl = Math.min(1, Math.sqrt(sum / 128) * 2.4);
+  }
+  var nSeg = 24, lit = Math.floor(lvl * nSeg);
+  for (var i = 0; i < nSeg; i++){
+    var x = i * (w / nSeg) + 1, sw = w / nSeg - 2;
+    var col = i < nSeg * .62 ? '#00e0a8' : i < nSeg * .85 ? '#ffd166' : '#ff5a5a';
+    vux.fillStyle = i < lit ? col : 'rgba(255,255,255,.05)';
+    vux.fillRect(x, 1, sw, h - 2);
+    if (i === lit) vux.fillStyle = col;
   }
 }
-/* ============ UI ============ */
+/* ============ 接线 ============ */
 function toast(msg){
   var el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('on');
   clearTimeout(el._t);
-  el._t = setTimeout(function(){ el.classList.remove('on'); }, 1600);
+  el._t = setTimeout(function(){ el.classList.remove('on'); }, 1500);
 }
 document.getElementById('startBtn').addEventListener('click', function(){
   initAudio();
   ctx.resume();
   state.playing = true;
-  state.root = PRESETS.haino.root;
-  applyPreset('haino');
   document.getElementById('wake').style.display = 'none';
-  document.querySelectorAll('[data-p]').forEach(function(b){ b.classList.remove('on'); });
-  document.querySelector('[data-p="haino"]').classList.add('on');
-  toast('嗡鸣开始。A~H 换根音，Space 爆发，即兴模式已开启');
+  applyPatch('haino');
+  applyPatchKnobSync();
+  toast('嗡鸣开始 · A~H 换根音 · Space 爆发');
 });
 document.getElementById('presetRow').addEventListener('click', function(e){
   var b = e.target.closest('[data-p]');
   if (!b || !ctx) return;
   document.querySelectorAll('[data-p]').forEach(function(x){ x.classList.remove('on'); });
   b.classList.add('on');
-  applyPreset(b.dataset.p);
+  applyPatch(b.dataset.p);
+  applyPatchKnobSync();
 });
 document.getElementById('burstBtn').addEventListener('click', function(){ burst(1); });
 document.getElementById('silenceBtn').addEventListener('click', function(){
@@ -535,36 +791,62 @@ document.getElementById('silenceBtn').addEventListener('click', function(){
 document.getElementById('autoBtn').addEventListener('click', function(){
   state.auto = !state.auto;
   this.classList.toggle('on', state.auto);
-  this.textContent = state.auto ? '▶ 即兴:开' : '⏸ 即兴:关';
+  this.textContent = state.auto ? '▶ 即兴' : '⏸ 即兴';
 });
-/* 旋钮 */
-function bindKnob(id, fn){
+/* 波形 */
+document.getElementById('waveSeg').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  setDroneWave(b.dataset.w);
+});
+document.getElementById('padWaveSeg').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  setPadWave(b.dataset.w);
+});
+/* 八度 */
+document.getElementById('octSeg').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b || !ctx) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  setOct(+b.dataset.o);
+});
+/* 噪声类型 */
+document.getElementById('noiseTypeSeg').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b || !ctx) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  noiseType = b.dataset.t;
+  makeNoiseChain();
+  noiseGainNode.gain.setTargetAtTime(P.noiselvl / 100 * .5, ctx.currentTime, .05);
+});
+/* 通道推子 */
+function ch(id, vId, fn){
   var el = document.getElementById(id);
+  var out = document.getElementById(vId);
   el.addEventListener('input', function(){
-    var v = +this.value;
-    var out = el.parentElement.querySelector('b');
-    if (out) out.textContent = v;
-    fn(v, el);
+    var v = +el.value;
+    out.textContent = v;
+    fn(v / 100, el);
   });
 }
-bindKnob('distKnob', function(v){ setDist(v / 100); });
-bindKnob('spaceKnob', function(v){
-  if (ctx) spaceSend.gain.setTargetAtTime(v / 100 * 1.1, ctx.currentTime, .1);
+ch('chDrone', 'vDrone', function(v){ if (ctx) droneSub.gain.setTargetAtTime(v * 1.4, ctx.currentTime, .08); });
+ch('chPad', 'vPad', function(v){ if (ctx) padSub.gain.setTargetAtTime(v, ctx.currentTime, .08); });
+ch('chNoise', 'vNoise', function(v){ if (ctx && noiseGainNode) noiseGainNode.gain.setTargetAtTime(v * .5, ctx.currentTime, .05); });
+ch('chMic', 'vMic', function(v){ if (ctx && micStream) micBus.gain.setTargetAtTime(v, ctx.currentTime, .05); });
+/* 键盘 + Space */
+window.addEventListener('keydown', function(e){
+  if (e.code === 'Space'){ e.preventDefault(); burst(1); }
+  for (var i = 0; i < KEY_NOTES.length; i++){
+    if (KEY_NOTES[i].k === e.key.toLowerCase() && ctx && state.playing){
+      setRootHz(KEY_NOTES[i].hz * Math.pow(2, state.oct), true);
+      break;
+    }
+  }
 });
-bindKnob('noiseKnob', function(v){
-  if (ctx && noiseGainNode) noiseGainNode.gain.setTargetAtTime(v / 100 * .5, ctx.currentTime, .1);
-});
-bindKnob('cutKnob', function(v){
-  if (ctx) filt.frequency.setTargetAtTime(v, ctx.currentTime, .05);
-});
-document.getElementById('droneVol').addEventListener('input', function(){
-  if (ctx) droneSub.gain.setTargetAtTime(this.value / 100 * 1.4, ctx.currentTime, .08);
-});
-document.getElementById('padVol').addEventListener('input', function(){
-  if (ctx) padSub.gain.setTargetAtTime(this.value / 100, ctx.currentTime, .08);
-});
-/* ============ 鼠标演奏：X=滤波 Y=音量 ============ */
-var mouseInside = false;
+/* 鼠标演奏：X=滤波 Y=音量 */
 viz.addEventListener('pointermove', function(e){
   var r = viz.getBoundingClientRect();
   mouseX = (e.clientX - r.left) / r.width;
@@ -572,58 +854,62 @@ viz.addEventListener('pointermove', function(e){
   mouseInside = true;
   if (ctx && state.playing){
     filt.frequency.setTargetAtTime(60 + mouseX * 7000, ctx.currentTime, .06);
-    bus.gain.setTargetAtTime(.15 + mouseY * 1.2, ctx.currentTime, .08);
+    droneSub.gain.setTargetAtTime(.2 + mouseY * 1.1, ctx.currentTime, .08);
   }
 });
-viz.addEventListener('pointerleave', function(){ mouseInside = false; });
+viz.addEventListener('pointerleave', function(){
+  mouseInside = false;
+  if (ctx) droneSub.gain.setTargetAtTime((document.getElementById('chDrone').value / 100) * 1.4, ctx.currentTime, .3);
+});
 viz.addEventListener('pointerdown', function(){ if (ctx) burst(.8); });
-window.addEventListener('keydown', function(e){
-  if (e.code === 'Space'){ e.preventDefault(); if (ctx) burst(1); }
-  for (var i = 0; i < KEY_NOTES.length; i++){
-    if (KEY_NOTES[i].k === e.key.toLowerCase() && ctx){ setRootHz(KEY_NOTES[i].hz, true); break; }
-  }
-});
-/* ============ 麦克风嚎叫通道 ============ */
-var micBtn = document.getElementById('micBtn');
+/* 麦克风 */
 var micStream = null;
-micBtn.addEventListener('click', function(){
+var micBus = null;
+document.getElementById('micBtn').addEventListener('click', function(){
+  if (!ctx) return;
+  var btn = this;
   if (micStream){
     micStream.getTracks().forEach(function(t){ t.stop(); });
     micStream = null;
-    micBus.gain.setTargetAtTime(0.0001, ctx.currentTime, .1);
-    micBtn.classList.remove('on');
-    micBtn.textContent = '🎤 嚎叫通道（接麦克风）';
+    if (micBus) micBus.gain.setTargetAtTime(.0001, ctx.currentTime, .1);
+    btn.classList.remove('on');
+    btn.textContent = '🎤 嚎叫通道';
     toast('麦克风已断开');
     return;
   }
   navigator.mediaDevices.getUserMedia({audio: true}).then(function(stream){
     micStream = stream;
+    if (!micBus){
+      micBus = ctx.createGain(); micBus.gain.value = 0;
+      var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 200;
+      var md = ctx.createDelay(1.5); md.delayTime.value = .27;
+      var mfb = ctx.createGain(); mfb.gain.value = .62;
+      var mo = ctx.createGain(); mo.gain.value = .9;
+      micBus.connect(hp); hp.connect(md); md.connect(mfb); mfb.connect(md);
+      md.connect(mo); mo.connect(master); hp.connect(spaceSend);
+    }
     var src = ctx.createMediaStreamSource(stream);
     src.connect(micBus);
-    micBus.gain.setTargetAtTime(document.getElementById('micVol').value / 100, ctx.currentTime, .1);
-    micBtn.classList.add('on');
-    micBtn.textContent = '🔴 嚎叫中……（再点断开）';
-    toast('🎤 嚎吧！你的声音进反馈延迟了 —— 灰野敬二通道');
-  }).catch(function(){
-    toast('麦克风被拒或不可用');
-  });
+    micBus.gain.setTargetAtTime(document.getElementById('chMic').value / 100, ctx.currentTime, .1);
+    btn.classList.add('on');
+    btn.textContent = '🔴 嚎叫中……';
+    toast('🎤 嚎吧！人声进反馈延迟 —— 灰野敬二通道');
+  }).catch(function(){ toast('麦克风被拒或不可用'); });
 });
-document.getElementById('micVol').addEventListener('input', function(){
-  if (ctx && micStream) micBus.gain.setTargetAtTime(this.value / 100, ctx.currentTime, .05);
-});
-/* ============ 主循环 ============ */
+/* 主循环 */
 var last = performance.now();
 setInterval(function(){ tick(.1); }, 100);
+initKnobs();
+renderKeys();
+resizeV();
+window.addEventListener('resize', resizeV);
 function loop(now){
   var dt = Math.min(.05, (now - last) / 1000);
   last = now;
-  state.t = (state.t || 0) + dt;
+  state.t += dt;
   drawViz();
   requestAnimationFrame(loop);
 }
-window.addEventListener('resize', resizeV);
-renderKeys();
-resizeV();
 requestAnimationFrame(loop);
 })();
 </script>
