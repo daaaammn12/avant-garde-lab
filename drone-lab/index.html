@@ -4,28 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
-<title>DRONE LAB MK·II · 嗡鸣合成器</title>
+<title>DRONE LAB MK·III · 多轨嗡鸣演奏台</title>
 <style>
   /* ============================================================
-     DRONE LAB MK·II — design by taste-skill rules:
-     DESIGN_VARIANCE: 7 · MOTION_INTENSITY: 6 · VISUAL_DENSITY: 8
-     read: dark-tech instrument cockpit / mono terminal aesthetic /
-     single electro-blue accent on cold graphite neutrals
+     DRONE LAB MK·III — taste-skill rules:
+     DESIGN_VARIANCE: 7 · MOTION: 6 · DENSITY: 8
+     dark-tech instrument cockpit / mono terminal /
+     single electro-blue accent on graphite neutrals
      ============================================================ */
   :root{
-    --bg:#0b0d11;
-    --panel:#14171e;
-    --panel2:#181c25;
-    --edge:#262b36;
-    --edgeHi:rgba(255,255,255,.05);
-    --ink:#c9d1de;
-    --dim:#7d8697;
-    --faint:#4b5260;
-    --accent:#4f9dff;         /* single accent, locked page-wide */
-    --accentInk:#cfe2ff;
-    --r-lg:12px;              /* shape lock: cards 12 / controls 6 / inputs 4 */
-    --r-md:6px;
-    --r-sm:4px;
+    --bg:#0b0d11;--panel:#14171e;--panel2:#181c25;--edge:#262b36;
+    --ink:#c9d1de;--dim:#7d8697;--faint:#4b5260;
+    --accent:#4f9dff;--accentInk:#cfe2ff;
+    --r-lg:12px;--r-md:6px;--r-sm:4px;
     --sh:0 10px 28px rgba(5,10,18,.55),0 2px 6px rgba(5,10,18,.4);
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -39,7 +30,6 @@
     font-family:ui-monospace,"Cascadia Mono",Consolas,"JetBrains Mono",Menlo,monospace;
     display:flex;flex-direction:column;overflow:hidden;user-select:none;font-size:12px;
   }
-  /* ===== header: nameplate ===== */
   header{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--edge);background:linear-gradient(180deg,#10131a,#0c0f14)}
   .brandLed{width:10px;height:10px;border-radius:2px;background:var(--faint);flex:0 0 auto}
   .brandLed.on{background:var(--accent);box-shadow:0 0 10px var(--accent);animation:ledPulse 2.4s ease-in-out infinite}
@@ -47,17 +37,15 @@
   h1 small{font-size:9px;color:var(--dim);letter-spacing:2px;vertical-align:super;margin-left:4px}
   .sub{font-size:10px;color:var(--faint);letter-spacing:.5px}
   #patchName{margin-left:auto;font-size:11px;color:var(--accentInk);letter-spacing:1px;background:rgba(79,157,255,.06);border:1px solid rgba(79,157,255,.22);padding:3px 10px;border-radius:var(--r-sm)}
-  /* ===== stage ===== */
   #stage{flex:1;position:relative;min-height:0;margin:10px 14px 0;border:1px solid var(--edge);border-radius:var(--r-lg);overflow:hidden;background:#05070b;box-shadow:inset 0 0 60px rgba(0,0,0,.6)}
   #viz{position:absolute;inset:0;width:100%;height:100%}
-  #wake{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(700px 380px at 50% 42%,rgba(79,157,255,.07),transparent 60%),rgba(5,7,11,.86);backdrop-filter:blur(2px)}
+  #wake{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(700px 380px at 50% 42%,rgba(79,157,255,.07),transparent 60%),rgba(5,7,11,.86)}
   #wake button{font-family:inherit;font-size:17px;font-weight:700;letter-spacing:3px;padding:14px 36px;border-radius:var(--r-md);cursor:pointer;background:#101620;border:1px solid var(--accent);color:var(--accentInk);box-shadow:0 0 0 4px rgba(79,157,255,.07);transition:all .15s}
   #wake button:hover{background:#152034;box-shadow:0 0 24px rgba(79,157,255,.3)}
   #wake button:active{transform:translateY(1px) scale(.985)}
   #wake .wsub{font-size:11px;color:var(--faint);letter-spacing:1px}
   #toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(16,20,28,.95);border:1px solid rgba(79,157,255,.4);color:var(--accentInk);padding:6px 16px;font-size:11px;border-radius:var(--r-sm);opacity:0;transition:opacity .25s;z-index:9;pointer-events:none;letter-spacing:1px;white-space:nowrap}
   #toast.on{opacity:1}
-  /* ===== rack modules (brushed metal + screws) ===== */
   .rack{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--edge);border-radius:var(--r-lg);box-shadow:var(--sh);position:relative}
   .rack::before,.rack::after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a4150,#12151c 70%);box-shadow:inset 0 1px 1px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.04)}
   .rack::before{top:7px;left:7px}
@@ -65,13 +53,10 @@
   .rackH{display:flex;align-items:center;gap:7px;padding:7px 12px;border-bottom:1px solid var(--edge);font-size:9.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
   .rackH .led{width:6px;height:6px;border-radius:50%;background:var(--faint)}
   .rackH .led.on{background:var(--accent);box-shadow:0 0 7px var(--accent);animation:ledPulse 2.4s ease-in-out infinite}
-  .rackH .led.g.on{background:#3ecf8e;box-shadow:0 0 7px #3ecf8e;animation:none}
   .rackB{padding:10px 12px}
-  /* ===== knobs (machined metal) ===== */
   .knobWrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;cursor:ns-resize}
   .knob{width:48px;height:48px;border-radius:50%;position:relative;
-    background:
-      radial-gradient(circle at 32% 26%, #39404f 0%, #1b1f28 55%, #12151c 100%);
+    background:radial-gradient(circle at 32% 26%,#39404f 0%,#1b1f28 55%,#12151c 100%);
     border:1px solid #2b303c;
     box-shadow:0 4px 10px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.06),inset 0 -2px 4px rgba(0,0,0,.55)}
   .knob .arc{position:absolute;inset:-3px;border-radius:50%;
@@ -82,7 +67,6 @@
   .knob.drag{box-shadow:0 0 0 1px rgba(79,157,255,.5),0 4px 14px rgba(79,157,255,.25)}
   .knobL{font-size:9px;color:var(--dim);letter-spacing:.08em;white-space:nowrap;text-transform:uppercase}
   .knobV{font-size:10px;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
-  /* ===== segment / buttons ===== */
   .seg{display:flex;gap:3px}
   .seg button{font-family:inherit;font-size:10px;padding:4px 8px;background:#10141b;border:1px solid var(--edge);color:var(--dim);border-radius:var(--r-sm);cursor:pointer;letter-spacing:.06em;transition:all .1s}
   .seg button:hover{color:var(--ink);border-color:#333a48}
@@ -94,48 +78,75 @@
   .pb.on{background:rgba(79,157,255,.14);border-color:var(--accent);color:var(--accentInk);box-shadow:0 0 12px rgba(79,157,255,.18)}
   .pb.burst{background:#1c0e10;border-color:#c2484a;color:#f5c4c5}
   .pb.burst:hover{background:#271315;border-color:#e06365;box-shadow:0 0 12px rgba(224,99,101,.25)}
-  /* ===== layout ===== */
   #panel{padding:10px 14px 12px;display:flex;flex-direction:column;gap:9px;overflow-y:auto}
   #panel::-webkit-scrollbar{width:6px}
   #panel::-webkit-scrollbar-thumb{background:#262b36;border-radius:3px}
   #presetRow{display:flex;gap:8px;flex-wrap:wrap;padding:8px 14px;margin:10px 14px 0;align-items:center}
   #presetRow .lab{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
   #presetRow .rightHint{font-size:9px;color:var(--faint);margin-left:auto;letter-spacing:.04em}
-  /* asymmetric rack grid: 3 + 2 (variance 7) */
   .mods{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
   .mods .rack{overflow:hidden}
   .mVo{grid-column:span 2}.mFi{grid-column:span 2}.mNo{grid-column:span 2}
   .mSp{grid-column:span 3}.mDr{grid-column:span 3}
   .mods .rackB{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;align-items:center}
   .mods .rackB .c{display:flex;gap:8px;flex-direction:column}
+  /* ===== tracks ===== */
+  #trackPanel{margin:0 14px;padding:9px 12px}
+  #trackPanel .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  #trackPanel .lab{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
+  #trackPanel .addRow{margin-left:auto;display:flex;gap:6px;align-items:center}
+  #trackPanel select{font-family:inherit;font-size:10px;background:#10141b;border:1px solid var(--edge);color:var(--dim);border-radius:var(--r-sm);padding:4px 6px;outline:none}
+  #trackRow{display:flex;gap:8px;flex-wrap:wrap}
+  .trk{flex:1 1 190px;min-width:180px;background:#10141b;border:1px solid var(--edge);border-radius:var(--r-md);padding:7px 9px;cursor:pointer;position:relative;transition:border-color .12s}
+  .trk.sel{border-color:var(--accent);box-shadow:0 0 12px rgba(79,157,255,.15);background:#121a28}
+  .trk .top{display:flex;align-items:center;gap:5px}
+  .trk .tname{font-size:10px;color:var(--ink);letter-spacing:.08em;font-weight:700}
+  .trk .ttag{font-size:8px;color:var(--faint);letter-spacing:.1em;margin-left:3px}
+  .trk .ms{display:flex;gap:3px;margin-left:auto}
+  .trk .ms b{font-size:9px;width:16px;height:16px;line-height:15px;text-align:center;border:1px solid var(--edge);border-radius:3px;color:var(--faint);cursor:pointer;font-weight:400}
+  .trk .ms b:hover{color:var(--ink)}
+  .trk .ms b.mute.on{background:#292019;border-color:#b98a3d;color:#f0cf9a}
+  .trk .ms b.solo.on{background:rgba(79,157,255,.2);border-color:var(--accent);color:var(--accentInk)}
+  .trk .del{font-size:9px;color:var(--faint);margin-left:2px}
+  .trk .del:hover{color:#e06365}
+  .trk .base{display:flex;align-items:center;gap:6px;margin-top:6px}
+  .trk .base input[type=range]{flex:1;accent-color:var(--accent);height:14px;cursor:pointer}
+  .trk .base .v{font-size:9px;color:var(--dim);min-width:22px;text-align:right;font-variant-numeric:tabular-nums}
+  .trk.off{opacity:.45}
+  .trk.off .tname{color:var(--faint)}
+  /* ===== keyboard ===== */
+  #kbWrap{display:flex;flex-direction:column;gap:4px}
+  #kbRow{display:flex;gap:3px;align-items:end;justify-content:flex-start;padding:0 2px;position:relative}
+  .key{position:relative;width:34px;height:52px;border-radius:4px;background:#0d1016;border:1px solid #2e3442;border-bottom:3px solid #2e3442;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:8px;color:var(--dim);cursor:pointer;padding-bottom:3px;padding-top:14px}
+  .key b{font-size:10px;color:var(--ink);font-weight:700;margin-bottom:2px}
+  .key:hover{border-color:#3f4762}
+  .key:active,.key.hold{background:rgba(79,157,255,.18);border-color:var(--accent);color:var(--accentInk);transform:translateY(2px);border-bottom-width:1px}
+  .key.black{position:absolute;width:20px;height:30px;background:#05070a;border:1px solid #232837;border-bottom:3px solid #232837;z-index:2;color:#8b94a5;justify-content:flex-end;padding-bottom:2px}
+  .key.black b{font-size:8px;margin-bottom:0}
+  .key.black:active,.key.black.hold{background:#16263d;border-color:var(--accent);transform:translateY(2px)}
+  #kbHint{font-size:8.5px;color:var(--faint);letter-spacing:.05em}
+  /* ===== bottom ===== */
   .bottomRow{display:flex;gap:14px;align-items:end;flex-wrap:wrap}
-  .channel{display:flex;align-items:flex-end;gap:12px;padding:9px 12px}
-  .channel .lab{font-size:9px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;align-self:flex-start;margin-top:8px;writing-mode:vertical-rl;transform:rotate(180deg)}
-  .ch{display:flex;flex-direction:column;align-items:center;gap:3px}
-  .ch .chN{font-size:8px;color:var(--faint);letter-spacing:.12em}
-  .ch input[type=range]{writing-mode:vertical-lr;direction:rtl;width:22px;height:70px;accent-color:var(--accent);cursor:pointer}
-  .ch .chV{font-size:8.5px;color:var(--dim);font-variant-numeric:tabular-nums}
-  #keys{display:flex;gap:3px}
-  .key{width:40px;height:44px;border-radius:var(--r-sm);background:#10141b;border:1px solid var(--edge);border-top:2px solid #31374a;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:var(--faint);cursor:pointer;transition:all .08s}
-  .key b{font-size:13px;color:var(--ink)}
-  .key:hover{border-color:#3d4452;color:var(--dim)}
-  .key:active,.key.hold{background:rgba(79,157,255,.16);border-color:var(--accent);color:var(--accentInk);transform:translateY(1px)}
   .ops{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
   #vu{width:150px;height:14px;border-radius:var(--r-sm);overflow:hidden;background:#0c0f14;border:1px solid var(--edge)}
   #vu canvas{width:100%;height:100%;display:block}
   .segRow{display:flex;align-items:center;gap:7px;margin-top:2px}
   .segRow .lab{font-size:8.5px;color:var(--faint);letter-spacing:.1em;white-space:nowrap}
+  .ch{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .ch .chN{font-size:8px;color:var(--faint);letter-spacing:.12em}
+  .ch input[type=range]{writing-mode:vertical-lr;direction:rtl;width:22px;height:38px;accent-color:var(--accent);cursor:pointer}
+  .ch .chV{font-size:8.5px;color:var(--dim);font-variant-numeric:tabular-nums}
   @keyframes ledPulse{0%,100%{opacity:1}50%{opacity:.45}}
   @media (max-width:1150px){.mods{grid-template-columns:repeat(2,1fr)}.mVo,.mFi,.mNo,.mSp,.mDr{grid-column:span 1}}
-  @media (max-width:760px){.mods{grid-template-columns:1fr}.sub{display:none}}
+  @media (max-width:760px){.mods{grid-template-columns:1fr}.sub{display:none}.key{width:30px}}
   @media (prefers-reduced-motion:reduce){.brandLed.on,.rackH .led.on{animation:none}.key,.seg button,.pb{transition:none}}
 </style>
 </head>
 <body>
 <header>
   <span class="brandLed"></span>
-  <h1>Drone Lab <small>MK·II</small></h1>
-  <span class="sub">嗡鸣合成器 · 电子制噪工作站</span>
+  <h1>Drone Lab <small>MK·III</small></h1>
+  <span class="sub">多轨嗡鸣演奏台 · 乐器叠合</span>
   <span id="patchName">未通电</span>
 </header>
 
@@ -154,7 +165,25 @@
   <button class="pb" data-p="nanjo">🎸 南条麻人</button>
   <button class="pb" data-p="acid">🚀 酸母寺</button>
   <button class="pb" data-p="naoki">🌫️ 头士奈生树</button>
-  <span class="rightHint">双击旋钮复位 · 拖动调节</span>
+  <span class="rightHint">双击旋钮复位 · 点击轨条选中演奏目标</span>
+</div>
+
+<div id="trackPanel" class="rack">
+  <div class="head">
+    <span class="lab">音轨 TRACKS · 点击轨条选中 · 叠合越厚越炸</span>
+    <div class="addRow">
+      <select id="addType">
+        <option value="bell">钵</option>
+        <option value="jaw">口弦琴</option>
+        <option value="guitar">电吉他</option>
+        <option value="drone">嗡鸣</option>
+        <option value="pad">衬垫</option>
+        <option value="noise">噪声</option>
+      </select>
+      <button class="pb" id="addTrackBtn">+ 叠加音轨</button>
+    </div>
+  </div>
+  <div id="trackRow"></div>
 </div>
 
 <div id="panel">
@@ -163,21 +192,15 @@
     <div class="rack mVo">
       <div class="rackH"><span class="led" id="ledVoice"></span>VOICE · 声源</div>
       <div class="rackB">
-        <div class="c" style="flex-direction:column">
+        <div class="c">
           <div class="segRow"><span class="lab">DRONE 波形</span>
-            <div class="seg" id="waveSeg">
-              <button data-w="sawtooth" class="on">锯齿</button><button data-w="square">方波</button><button data-w="triangle">三角</button>
-            </div>
+            <div class="seg" id="waveSeg"><button data-w="sawtooth" class="on">锯齿</button><button data-w="square">方波</button><button data-w="triangle">三角</button></div>
           </div>
           <div class="segRow"><span class="lab">PAD 波形</span>
-            <div class="seg" id="padWaveSeg">
-              <button data-w="sawtooth" class="on">锯齿</button><button data-w="square">方波</button><button data-w="sine">正弦</button>
-            </div>
+            <div class="seg" id="padWaveSeg"><button data-w="sawtooth" class="on">锯齿</button><button data-w="square">方波</button><button data-w="sine">正弦</button></div>
           </div>
           <div class="segRow"><span class="lab">OCT</span>
-            <div class="seg" id="octSeg">
-              <button data-o="-1">-1</button><button data-o="0" class="on">0</button><button data-o="1">+1</button>
-            </div>
+            <div class="seg" id="octSeg"><button data-o="-1">-1</button><button data-o="0" class="on">0</button><button data-o="1">+1</button></div>
           </div>
         </div>
         <div class="knobWrap" data-knob="detune"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DETUNE</span><span class="knobV">1.0×</span></div>
@@ -199,13 +222,9 @@
       <div class="rackB">
         <div class="knobWrap" data-knob="noiselvl"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">电平</span><span class="knobV">0</span></div>
         <div class="knobWrap" data-knob="noisetone"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">TONE 音色</span><span class="knobV">500</span></div>
-        <div class="c" style="flex-direction:column;justify-content:center">
-          <div class="segRow"><span class="lab">类型</span>
-            <div class="seg" id="noiseTypeSeg">
-              <button data-t="pink" class="on">粉噪</button><button data-t="white">白噪</button>
-            </div>
-          </div>
-        </div>
+        <div class="c"><div class="segRow"><span class="lab">类型</span>
+          <div class="seg" id="noiseTypeSeg"><button data-t="pink" class="on">粉噪</button><button data-t="white">白噪</button></div>
+        </div></div>
       </div>
     </div>
     <!-- SPACE -->
@@ -224,23 +243,17 @@
       <div class="rackB">
         <div class="knobWrap" data-knob="drive"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">DRIVE 驱动</span><span class="knobV">90</span></div>
         <div class="knobWrap" data-knob="out"><div class="knob"><div class="arc"></div><div class="ptr"></div></div><span class="knobL">OUTPUT</span><span class="knobV">85</span></div>
-        <div class="c" style="flex-direction:column;align-items:center;gap:5px">
-          <span class="knobL">电平</span>
-          <div id="vu"><canvas id="vuC"></canvas></div>
-        </div>
+        <div class="c" style="align-items:center"><span class="knobL">电平</span><div id="vu"><canvas id="vuC"></canvas></div></div>
       </div>
+      <div class="ch" style="margin:4px 12px 8px"><span class="chN">MIC</span><input type="range" id="chMic" min="0" max="100" value="80" style="height:38px"><span class="chV" id="vMic">80</span></div>
     </div>
   </div>
 
   <div class="bottomRow">
-    <div class="channel rack">
-      <span class="lab">通道 CH</span>
-      <div class="ch"><span class="chN">DRONE</span><input type="range" id="chDrone" min="0" max="100" value="80" orient="vertical"><span class="chV" id="vDrone">80</span></div>
-      <div class="ch"><span class="chN">PAD</span><input type="range" id="chPad" min="0" max="100" value="55" orient="vertical"><span class="chV" id="vPad">55</span></div>
-      <div class="ch"><span class="chN">NOISE</span><input type="range" id="chNoise" min="0" max="100" value="20" orient="vertical"><span class="chV" id="vNoise">20</span></div>
-      <div class="ch"><span class="chN">MIC</span><input type="range" id="chMic" min="0" max="100" value="80" orient="vertical"><span class="chV" id="vMic">80</span></div>
+    <div id="kbWrap" class="rack" style="padding:8px 10px">
+      <div id="kbRow"></div>
+      <div id="kbHint">白键 A S D F G H J K L · 黑键 W E T Y U · 弹当前选中轨</div>
     </div>
-    <div id="keys" title="A S D F G H 换根音"></div>
     <div class="ops">
       <button class="pb burst" id="burstBtn">💥 爆发 (Space)</button>
       <button class="pb" id="silenceBtn">🕳 静默</button>
@@ -255,23 +268,68 @@
 'use strict';
 var AC = window.AudioContext || window.webkitAudioContext;
 var ctx = null;
-/* ============ 音频引用 ============ */
 var master, limiter, bus, dist, filt, spaceSend, wetG, dryG, conv, delay, delayFb, delayOut;
 var droneSub, padSub, cleanMaster, noiseGainNode, noiseFilt;
 var lfo, lfoAmtG;
 var analyser, freqData, waveData;
-/* ============ 状态与参数 ============ */
 var state = { p:'haino', playing:false, burst:0, auto:true, t:0, root:51.9, oct:0, silentUntil:0, silenceTimer:0, glissTimer:0 };
 var droneOscs = [], padOscs = [];
-var P = {};   /* 当前参数表（旋钮值） */
+var P = {};
 var waveA = 'sawtooth', waveB = 'sawtooth', noiseType = 'pink';
-/* 默认参数 */
 var DEF = { detune:1.0, cutoff:2400, res:.6, lfospd:.06, lfoamt:.22, noiselvl:0, noisetone:500,
             size:3.2, mix:40, dtime:.42, dfb:42, drive:90, out:85 };
 for (var k in DEF) P[k] = DEF[k];
-/* 预设根音 */
-var PATCHROOT = { haino:51.9, nanjo:45.9, acid:55, naoki:36.7 };
-/* ============ 音频构建 ============ */
+
+/* ================= 音轨系统 ================= */
+var TRACK_KIND = {
+  drone:  {label:'嗡鸣',  tag:'DRONE STACK'},
+  pad:    {label:'衬垫',  tag:'PAD'},
+  bell:   {label:'钵',    tag:'SINGING BOWL'},
+  jaw:    {label:'口弦琴', tag:'JAW HARP'},
+  guitar: {label:'电吉他', tag:'EL. GUITAR'},
+  noise:  {label:'噪声',  tag:'NOISE LAYER'}
+};
+var tracks = [];
+var selTrack = 0;
+var nextTrackId = 1;
+function mkTrack(type, vol){
+  var t = { id:nextTrackId++, type:type, on:true, solo:false, vol:vol || 70, gain:null, nodes:[] };
+  tracks.push(t);
+  return t;
+}
+function trackOut(t){
+  if (!t.gain) t.gain = ctx.createGain();
+  if (t.type === 'pad' || t.type === 'bell'){
+    if (!t._wired){ t.gain.connect(cleanMaster); t.gain.connect(spaceSend); t._wired = true; }
+  } else {
+    if (!t._wired){ t.gain.connect(bus); t._wired = true; }
+  }
+}
+function trackAudible(t){
+  if (t.solo) return t.on;
+  var anySolo = tracks.some(function(x){ return x.solo; });
+  return t.on && !anySolo;
+}
+function refreshTrackGains(){
+  tracks.forEach(function(t){
+    if (!t.gain) return;
+    t.gain.gain.setTargetAtTime(trackAudible(t) ? t.vol / 100 : 0.0001, ctx.currentTime, .05);
+  });
+}
+function killTrackNodes(t){
+  t.nodes.forEach(function(n){ try{ n.stop && n.stop(); }catch(e){} try{ n.disconnect && n.disconnect(); }catch(e){} });
+  t.nodes = [];
+}
+function removeTrack(t){
+  killTrackNodes(t);
+  if (t._wired && t.gain) t.gain.disconnect();
+  tracks.splice(tracks.indexOf(t), 1);
+  selTrack = Math.min(selTrack, tracks.length - 1);
+  renderTracks();
+  refreshTrackGains();
+}
+
+/* ================= 音频构建 ================= */
 function makeNoise(seconds, pink){
   var len = Math.floor(ctx.sampleRate * seconds);
   var b = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -280,10 +338,9 @@ function makeNoise(seconds, pink){
   for (var i = 0; i < len; i++){
     var w = Math.random()*2-1;
     if (pink){
-      b0 = .99886*b0 + w*.0555179; b1 = .99332*b1 + w*.0750759;
-      b2 = .96900*b2 + w*.1538520; b3 = .86650*b3 + w*.3104856;
-      b4 = .55000*b4 + w*.5329522; b5 = -.7616*b5 - w*.0168980;
-      d[i] = (b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11; b6 = w*.115926;
+      b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.96900*b2+w*.1538520;
+      b3=.86650*b3+w*.3104856;b4=.55000*b4+w*.5329522;b5=-.7616*b5-w*.0168980;
+      d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926;
     } else d[i] = w;
   }
   return b;
@@ -323,24 +380,20 @@ function initAudio(){
   cleanMaster = ctx.createGain(); cleanMaster.gain.value = .9; cleanMaster.connect(master);
   droneSub = ctx.createGain(); droneSub.gain.value = .8; droneSub.connect(bus);
   padSub = ctx.createGain(); padSub.gain.value = .55; padSub.connect(cleanMaster);
-  /* 空间：可重建卷积 */
   conv = ctx.createConvolver(); conv.buffer = makeImpulse(P.size);
   spaceSend = ctx.createGain();
   wetG = ctx.createGain();
   filt.connect(spaceSend); spaceSend.connect(conv); conv.connect(wetG); wetG.connect(master);
   padSub.connect(spaceSend);
-  /* 滤波 LFO */
   lfo = ctx.createOscillator(); lfo.frequency.value = P.lfospd;
   lfoAmtG = ctx.createGain(); lfoAmtG.gain.value = P.lfoamt * P.cutoff;
   lfo.connect(lfoAmtG); lfoAmtG.connect(filt.frequency); lfo.start();
-  /* 延迟 */
   delay = ctx.createDelay(1.4); delay.delayTime.value = P.dtime;
   delayFb = ctx.createGain(); delayFb.gain.value = P.dfb / 100 * .9;
   delayOut = ctx.createGain(); delayOut.gain.value = .5;
   filt.connect(delay); delay.connect(delayFb); delayFb.connect(delay);
   delay.connect(delayOut); delayOut.connect(master);
   setWetDry(P.mix);
-  /* 噪声 */
   makeNoiseChain();
   analyser = ctx.createAnalyser(); analyser.fftSize = 1024;
   master.connect(analyser);
@@ -366,59 +419,182 @@ function killOscs(arr){
   arr.forEach(function(o){ try{ o.stop(); }catch(e){} try{ o.disconnect(); }catch(e){} });
   arr.length = 0;
 }
-/* ============ 预设 ============ */
+
+/* ================= 乐器引擎 ================= */
+function playBell(f0, vel){
+  var t0 = ctx.currentTime;
+  var out = tracks[selTrack].gain;
+  var partials = [[1,1,3.8],[2.74,.4,2.6],[5.17,.14,1.8],[8.2,.05,1.2]];
+  partials.forEach(function(p){
+    var beat = 1 + (Math.random()-.5) * .0016;
+    [1, beat].forEach(function(mult){
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = Math.max(24, f0 * p[0] * mult);
+      var peak = .16 * p[1] * vel;
+      g.gain.setValueAtTime(.0001, t0);
+      g.gain.exponentialRampToValueAtTime(Math.max(.001, peak), t0 + .012);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + p[2]);
+      o.connect(g); g.connect(out);
+      o.start(t0); o.stop(t0 + p[2] + .1);
+    });
+  });
+  var s = ctx.createBufferSource();
+  s.buffer = makeNoise(.12, false);
+  var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f0 * 6; bp.Q.value = 1;
+  var g = ctx.createGain();
+  g.gain.setValueAtTime(.3 * vel, t0);
+  g.gain.exponentialRampToValueAtTime(.0001, t0 + .09);
+  s.connect(bp); bp.connect(g); g.connect(out);
+  s.start(t0); s.stop(t0 + .12);
+}
+function playJaw(f0, vel){
+  var t0 = ctx.currentTime;
+  var out = tracks[selTrack].gain;
+  var o = ctx.createOscillator();
+  o.type = 'sawtooth';
+  o.frequency.value = f0;
+  var vib = ctx.createOscillator();
+  vib.frequency.value = 5 + Math.random() * 3;
+  var vibG = ctx.createGain();
+  vibG.gain.value = f0 * .018;
+  vib.connect(vibG); vibG.connect(o.frequency);
+  var form = ctx.createBiquadFilter();
+  form.type = 'bandpass';
+  var fStart = 500 + Math.random() * 300;
+  form.frequency.setValueAtTime(fStart, t0);
+  form.frequency.exponentialRampToValueAtTime(fStart * (1.6 + Math.random() * .9), t0 + .25 + Math.random() * .3);
+  form.Q.value = 3.5;
+  var g = ctx.createGain();
+  g.gain.setValueAtTime(.0001, t0);
+  g.gain.exponentialRampToValueAtTime(.05, t0 + .01);
+  g.gain.exponentialRampToValueAtTime(.0001, t0 + .9 + Math.random() * .5);
+  o.connect(form); form.connect(g); g.connect(out);
+  var pg = ctx.createGain(); pg.gain.value = .004; o.connect(pg); pg.connect(out);
+  o.start(t0); o.stop(t0 + 1.5);
+  vib.start(t0); vib.stop(t0 + 1.5);
+  var s = ctx.createBufferSource();
+  s.buffer = makeNoise(.04, false);
+  var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2400;
+  var g2 = ctx.createGain();
+  g2.gain.setValueAtTime(.12 * vel, t0);
+  g2.gain.exponentialRampToValueAtTime(.0001, t0 + .03);
+  s.connect(hp); hp.connect(g2); g2.connect(out);
+  s.start(t0); s.stop(t0 + .05);
+}
+function playGuitar(f0, vel){
+  var t0 = ctx.currentTime;
+  var out = tracks[selTrack].gain;
+  var s = ctx.createBufferSource();
+  s.buffer = makeNoise(.06, false);
+  var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2600; bp.Q.value = 1.2;
+  var g0 = ctx.createGain();
+  g0.gain.setValueAtTime(.22 * vel, t0);
+  g0.gain.exponentialRampToValueAtTime(.0001, t0 + .05);
+  s.connect(bp); bp.connect(g0); g0.connect(out);
+  s.start(t0); s.stop(t0 + .07);
+  var dur = 2.2 + Math.random() * 1.2;
+  [.995, 1.008].forEach(function(mult, i){
+    var o = ctx.createOscillator();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(f0 * .985 * mult, t0);
+    o.frequency.exponentialRampToValueAtTime(f0 * mult, t0 + .06);
+    var vib = ctx.createOscillator();
+    vib.frequency.value = 4.6 + i * .7;
+    var vibG = ctx.createGain();
+    vibG.gain.value = f0 * .01;
+    vib.connect(vibG); vibG.connect(o.frequency);
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(.11 * vel * (i ? .8 : 1), t0 + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3600;
+    o.connect(lp); lp.connect(g); g.connect(out);
+    o.start(t0); o.stop(t0 + dur + .1);
+    vib.start(t0); vib.stop(t0 + dur + .1);
+  });
+}
+
+/* ================= 音轨常驻声部 ================= */
+function buildTrackVoices(t){
+  killTrackNodes(t);
+  if (t.type === 'drone'){
+    var pc = PATCHES[state.p];
+    pc.drone.forEach(function(cfg){
+      var o = ctx.createOscillator();
+      o.type = waveA;
+      o.frequency.value = semisToHz(state.root, cfg.s);
+      o._bd = cfg.d; o.detune.value = cfg.d * P.detune;
+      var g = ctx.createGain(); g.gain.value = cfg.g * .6;
+      o.connect(g); g.connect(t.gain);
+      o.start();
+      t.nodes.push(o);
+    });
+  } else if (t.type === 'pad'){
+    var p2 = PATCHES[state.p];
+    p2.pad.forEach(function(cfg){
+      var o = ctx.createOscillator();
+      o.type = cfg.t === 'sine' ? 'sine' : waveB;
+      o.frequency.value = semisToHz(state.root, cfg.s);
+      o._bd = cfg.d; o.detune.value = cfg.d * P.detune;
+      var g = ctx.createGain(); g.gain.value = cfg.g;
+      o.connect(g); g.connect(t.gain);
+      o.start();
+      t.nodes.push(o);
+    });
+  } else if (t.type === 'noise'){
+    var src = ctx.createBufferSource();
+    src.buffer = makeNoise(4, noiseType === 'pink');
+    src.loop = true;
+    var nf = ctx.createBiquadFilter(); nf.type = 'bandpass';
+    nf.frequency.value = P.noisetone; nf.Q.value = .8;
+    var g = ctx.createGain(); g.gain.value = .3;
+    src.connect(nf); nf.connect(g); g.connect(t.gain);
+    src.start();
+    t.nodes.push(src);
+  }
+}
+
+/* ================= 预设 ================= */
 var PATCHES = {
   haino: { name:'😱 灰野敬二 · 嚎叫与静默', root:51.9, P:{drive:92, cutoff:5200, res:2.4, mix:78, size:4.0, noiselvl:26, noisetone:1500, lfospd:.5, lfoamt:.5, dtime:.27, dfb:62, detune:1.8},
-    drone:[{s:0,t:'sawtooth',g:.19,d:23},{s:.5,t:'sawtooth',g:.17,d:-19},{s:6,t:'square',g:.11,d:0},{s:-6,t:'sawtooth',g:.10,d:31}],
-    pad:[{s:13,t:'sawtooth',g:.06,d:40},{s:1,t:'sine',g:.10,d:0}], script:'haino', wave:'sawtooth' },
+    drone:[{s:0,t:'sawtooth',g:.17,d:23},{s:.5,t:'sawtooth',g:.15,d:-19},{s:6,t:'square',g:.10,d:0},{s:-6,t:'sawtooth',g:.09,d:31}],
+    pad:[{s:13,t:'sawtooth',g:.06,d:40},{s:1,t:'sine',g:.09,d:0}], script:'haino', wave:'sawtooth',
+    tracks:[{type:'drone',vol:85},{type:'guitar',vol:55},{type:'noise',vol:45}] },
   nanjo: { name:'🎸 南条麻人 · HIGH RISE 音墙', root:45.9, P:{drive:60, cutoff:2600, res:.8, mix:45, size:3.0, noiselvl:8, noisetone:800, lfospd:.08, lfoamt:.3, dtime:.42, dfb:36, detune:.9},
-    drone:[{s:0,t:'sawtooth',g:.16,d:9},{s:.02,t:'sawtooth',g:.14,d:-7},{s:7,t:'sawtooth',g:.10,d:14},{s:-12,t:'square',g:.12,d:3}],
-    pad:[{s:12,t:'sawtooth',g:.05,d:5},{s:24,t:'sawtooth',g:.04,d:-8}], script:'bluesy', wave:'sawtooth' },
+    drone:[{s:0,t:'sawtooth',g:.15,d:9},{s:.02,t:'sawtooth',g:.13,d:-7},{s:7,t:'sawtooth',g:.09,d:14},{s:-12,t:'square',g:.11,d:3}],
+    pad:[{s:12,t:'sawtooth',g:.05,d:5},{s:24,t:'sawtooth',g:.04,d:-8}], script:'bluesy', wave:'sawtooth',
+    tracks:[{type:'drone',vol:80},{type:'guitar',vol:70},{type:'jaw',vol:30}] },
   acid:  { name:'🚀 酸母寺 · 太空长音', root:55, P:{drive:12, cutoff:3600, res:.7, mix:85, size:4.5, noiselvl:4, noisetone:900, lfospd:.04, lfoamt:.5, dtime:.6, dfb:48, detune:1.1},
-    drone:[{s:0,t:'sawtooth',g:.16,d:7},{s:.02,t:'sawtooth',g:.15,d:-6},{s:7,t:'sine',g:.13,d:0},{s:12,t:'sawtooth',g:.07,d:12}],
-    pad:[{s:19,t:'sine',g:.06,d:0},{s:24,t:'sine',g:.05,d:0},{s:31,t:'sine',g:.04,d:0}], script:'cosmic', wave:'sawtooth' },
+    drone:[{s:0,t:'sawtooth',g:.15,d:7},{s:.02,t:'sawtooth',g:.14,d:-6},{s:7,t:'sine',g:.12,d:0},{s:12,t:'sawtooth',g:.07,d:12}],
+    pad:[{s:19,t:'sine',g:.06,d:0},{s:24,t:'sine',g:.05,d:0},{s:31,t:'sine',g:.04,d:0}], script:'cosmic', wave:'sawtooth',
+    tracks:[{type:'drone',vol:75},{type:'pad',vol:60},{type:'bell',vol:50}] },
   naoki: { name:'🌫️ 头士奈生树 · 嗡鸣噪匠', root:36.7, P:{drive:30, cutoff:1900, res:1.2, mix:55, size:3.6, noiselvl:40, noisetone:420, lfospd:.12, lfoamt:.35, dtime:.3, dfb:40, detune:.6},
-    drone:[{s:0,t:'triangle',g:.18,d:3},{s:.03,t:'triangle',g:.16,d:-2},{s:-12,t:'triangle',g:.14,d:5}],
-    pad:[{s:9,t:'sine',g:.05,d:0},{s:16,t:'sine',g:.04,d:0}], script:'tick', wave:'triangle' }
+    drone:[{s:0,t:'triangle',g:.17,d:3},{s:.03,t:'triangle',g:.15,d:-2},{s:-12,t:'triangle',g:.13,d:5}],
+    pad:[{s:9,t:'sine',g:.05,d:0},{s:16,t:'sine',g:.04,d:0}], script:'tick', wave:'triangle',
+    tracks:[{type:'drone',vol:80},{type:'noise',vol:60},{type:'jaw',vol:45}] }
 };
 function applyPatch(id){
   state.p = id;
   var pc = PATCHES[id];
   state.root = pc.root * Math.pow(2, state.oct);
+  state._lastRoot = state.root;
   var np = pc.P;
   for (var k in np) P[k] = np[k];
   waveA = pc.wave || 'sawtooth';
+  tracks.forEach(function(t){ if (t._wired && t.gain) t.gain.disconnect(); });
   killOscs(droneOscs); killOscs(padOscs);
+  tracks = [];
+  pc.tracks.forEach(function(tc){ mkTrack(tc.type, tc.vol); });
+  selTrack = 0;
   if (!ctx) return;
-  var now = ctx.currentTime;
-  pc.drone.forEach(function(cfg){
-    var o = ctx.createOscillator();
-    o.type = waveA;
-    o.frequency.value = semisToHz(state.root, cfg.s);
-    o._bd = cfg.d;
-    o.detune.value = cfg.d * P.detune;
-    var g = ctx.createGain(); g.gain.value = cfg.g;
-    o.connect(g); g.connect(droneSub);
-    o.start();
-    droneOscs.push(o);
-  });
-  pc.pad.forEach(function(cfg){
-    var o = ctx.createOscillator();
-    o.type = cfg.t === 'sine' ? 'sine' : waveB;
-    o.frequency.value = semisToHz(state.root, cfg.s);
-    o._bd = cfg.d;
-    o.detune.value = cfg.d * P.detune;
-    var g = ctx.createGain(); g.gain.value = cfg.g;
-    o.connect(g); g.connect(padSub);
-    o.start();
-    padOscs.push(o);
-  });
-  state._lastRoot = state.root;
+  tracks.forEach(function(t){ trackOut(t); buildTrackVoices(t); });
+  refreshTrackGains();
+  renderTracks();
   applyAllParams();
   document.getElementById('patchName').textContent = '🎛 ' + pc.name;
-  toast(pc.name + ' 上路了');
+  toast(pc.name + ' · ' + tracks.length + ' 轨叠合');
 }
-/* 参数 → 音频（旋钮/滑杆全部走这里） */
 function applyAllParams(){
   if (!ctx) return;
   var now = ctx.currentTime;
@@ -426,8 +602,9 @@ function applyAllParams(){
   filt.Q.setTargetAtTime(P.res, now, .08);
   lfo.frequency.setTargetAtTime(P.lfospd, now, .1);
   lfoAmtG.gain.setTargetAtTime(P.lfoamt * P.cutoff, now, .1);
-  droneOscs.forEach(function(o){ if (o.detune) o.detune.setTargetAtTime((o._bd || 8) * P.detune, now, .1); });
-  padOscs.forEach(function(o){ if (o.detune) o.detune.setTargetAtTime((o._bd || 4) * P.detune, now, .1); });
+  tracks.forEach(function(t){
+    t.nodes.forEach(function(o){ if (o.detune) o.detune.setTargetAtTime((o._bd || 8) * P.detune, now, .1); });
+  });
   if (noiseGainNode) noiseGainNode.gain.setTargetAtTime(P.noiselvl / 100 * .5, now, .05);
   if (noiseFilt) noiseFilt.frequency.setTargetAtTime(P.noisetone, now, .08);
   spaceSend.gain.setTargetAtTime(P.mix / 100 * 1.15, now, .08);
@@ -437,9 +614,7 @@ function applyAllParams(){
   applyDrive(P.drive);
   master.gain.setTargetAtTime(P.out / 100 * 1.15, now, .06);
 }
-function applyDrive(d){
-  if (ctx) dist.curve = makeTanh(Math.round(20 + d * 4.6));
-}
+function applyDrive(d){ if (ctx) dist.curve = makeTanh(Math.round(20 + d * 4.6)); }
 function setWetDry(mix){
   if (!ctx) return;
   var now = ctx.currentTime;
@@ -448,17 +623,17 @@ function setWetDry(mix){
 }
 function setImpulseSize(sec){
   if (!ctx) return;
-  wetG.gain.setTargetAtTime(0.0001, ctx.currentTime, .03);
+  wetG.gain.setTargetAtTime(.0001, ctx.currentTime, .03);
   setTimeout(function(){
     if (!ctx) return;
     conv.buffer = makeImpulse(sec);
     wetG.gain.setTargetAtTime(P.mix / 100 * 1.2, ctx.currentTime, .06);
   }, 60);
 }
-/* ============ 旋钮组件 ============ */
-function setKnobVal(k, v){ P[k] = v; }
+
+/* ================= 旋钮组件 ================= */
 var knobFns = {
-  detune:   function(v){ P.detune = .2 + v * 2.6; applyAllParams(); return (P.detune).toFixed(2) + '×'; },
+  detune:   function(v){ P.detune = .2 + v * 2.6; applyAllParams(); return P.detune.toFixed(2) + '×'; },
   cutoff:   function(v){ P.cutoff = Math.round(60 + Math.pow(v, 1.6) * 9400); applyAllParams(); return fmtHz(P.cutoff); },
   res:      function(v){ P.res = .5 + v * 24; applyAllParams(); return P.res.toFixed(1); },
   lfospd:   function(v){ P.lfospd = .03 * Math.pow(60, v); applyAllParams(); return P.lfospd.toFixed(2) + 'Hz'; },
@@ -473,38 +648,28 @@ var knobFns = {
   out:      function(v){ P.out = Math.round(20 + v * 110); applyAllParams(); return P.out; }
 };
 function fmtHz(h){ return h >= 1000 ? (h/1000).toFixed(1) + 'k' : Math.round(h); }
-function fmtKnobV(k){ /* 显示当前 */
+function fmtKnobV(k){
   switch(k){
-    case 'detune': return P.detune.toFixed(2) + '×';
-    case 'cutoff': return fmtHz(P.cutoff);
-    case 'res': return P.res.toFixed(1);
-    case 'lfospd': return P.lfospd.toFixed(2);
-    case 'lfoamt': return Math.round(P.lfoamt * 100) + '%';
-    case 'noiselvl': return P.noiselvl;
-    case 'noisetone': return fmtHz(P.noisetone);
-    case 'size': return P.size.toFixed(1) + 's';
-    case 'mix': return P.mix;
-    case 'dtime': return P.dtime.toFixed(2);
-    case 'dfb': return P.dfb;
-    case 'drive': return P.drive;
-    case 'out': return P.out;
+    case 'detune': return P.detune.toFixed(2) + '×'; case 'cutoff': return fmtHz(P.cutoff);
+    case 'res': return P.res.toFixed(1); case 'lfospd': return P.lfospd.toFixed(2);
+    case 'lfoamt': return Math.round(P.lfoamt * 100) + '%'; case 'noiselvl': return P.noiselvl;
+    case 'noisetone': return fmtHz(P.noisetone); case 'size': return P.size.toFixed(1) + 's';
+    case 'mix': return P.mix; case 'dtime': return P.dtime.toFixed(2); case 'dfb': return P.dfb;
+    case 'drive': return P.drive; case 'out': return P.out;
   }
   return '';
 }
-function knobDefV(k){ /* 旋钮视觉 0..1（需反推当前 P 值） */
+function knobDefV(k){
   switch(k){
     case 'detune': return Math.min(1, Math.max(0, (P.detune - .2) / 2.6));
     case 'cutoff': return Math.min(1, Math.pow((P.cutoff - 60) / 9400, 1/1.6));
     case 'res': return Math.min(1, Math.max(0, (P.res - .5) / 24));
     case 'lfospd': return Math.min(1, Math.log(P.lfospd / .03) / Math.log(60));
-    case 'lfoamt': return P.lfoamt;
-    case 'noiselvl': return P.noiselvl / 100;
+    case 'lfoamt': return P.lfoamt; case 'noiselvl': return P.noiselvl / 100;
     case 'noisetone': return Math.min(1, Math.log(P.noisetone / 120) / Math.log(70));
     case 'size': return Math.min(1, Math.max(0, (P.size - .5) / 4.3));
-    case 'mix': return P.mix / 100;
-    case 'dtime': return Math.min(1, Math.max(0, (P.dtime - .05) / .95));
-    case 'dfb': return P.dfb / 100;
-    case 'drive': return P.drive / 100;
+    case 'mix': return P.mix / 100; case 'dtime': return Math.min(1, Math.max(0, (P.dtime - .05) / .95));
+    case 'dfb': return P.dfb / 100; case 'drive': return P.drive / 100;
     case 'out': return Math.min(1, Math.max(0, (P.out - 20) / 110));
   }
   return .5;
@@ -517,14 +682,10 @@ function initKnobs(){
     arc.style.setProperty('--v', v); ptr.style.setProperty('--v', v);
     val.textContent = fmtKnobV(k);
     var dragging = false, lastY = 0;
-    function renderVal(){
-      arc.style.setProperty('--v', v); ptr.style.setProperty('--v', v);
-    }
+    function renderVal(){ arc.style.setProperty('--v', v); ptr.style.setProperty('--v', v); }
     w.addEventListener('pointerdown', function(e){
-      e.preventDefault();
-      dragging = true; lastY = e.clientY;
-      w.classList.add('drag');
-      w.setPointerCapture(e.pointerId);
+      e.preventDefault(); dragging = true; lastY = e.clientY;
+      w.classList.add('drag'); w.setPointerCapture(e.pointerId);
     });
     w.addEventListener('pointermove', function(e){
       if (!dragging) return;
@@ -539,17 +700,12 @@ function initKnobs(){
     w.addEventListener('pointerup', up);
     w.addEventListener('pointercancel', up);
     w.addEventListener('dblclick', function(){
-      P[k] = DEF[k];
-      v = knobDefV(k);
-      renderVal();
-      applyAllParams();
-      val.textContent = fmtKnobV(k);
-      knobTick(k);
-      toast(k.toUpperCase() + ' 已复位');
+      P[k] = DEF[k]; v = knobDefV(k);
+      renderVal(); applyAllParams(); val.textContent = fmtKnobV(k);
+      knobTick(k); toast(k.toUpperCase() + ' 已复位');
     });
   });
 }
-/* 旋钮微击（确认感） */
 var lastTick = 0;
 function knobTick(k){
   if (!ctx || !state.playing) return;
@@ -557,12 +713,9 @@ function knobTick(k){
   if (now - lastTick < .05) return;
   lastTick = now;
   var o = ctx.createOscillator(), g = ctx.createGain();
-  o.type = 'sine';
-  o.frequency.value = 900 + P.cutoff * .25;
-  g.gain.setValueAtTime(.022, now);
-  g.gain.exponentialRampToValueAtTime(.0001, now + .04);
-  o.connect(g); g.connect(master);
-  o.start(now); o.stop(now + .06);
+  o.type = 'sine'; o.frequency.value = 900 + P.cutoff * .25;
+  g.gain.setValueAtTime(.022, now); g.gain.exponentialRampToValueAtTime(.0001, now + .04);
+  o.connect(g); g.connect(master); o.start(now); o.stop(now + .06);
 }
 function applyPatchKnobSync(){
   document.querySelectorAll('.knobWrap').forEach(function(w){
@@ -573,57 +726,156 @@ function applyPatchKnobSync(){
     val.textContent = fmtKnobV(k);
   });
 }
-/* ============ 波形 / 八度 / 噪声类型 / 通道 ============ */
 function setDroneWave(w){
   waveA = w;
-  droneOscs.forEach(function(o){ if (o.type && o.frequency.value > 20) o.type = w; });
+  tracks.forEach(function(t){ if (t.type === 'drone') t.nodes.forEach(function(o){ if (o.type && o._bd !== undefined) o.type = w; }); });
 }
 function setPadWave(w){
   waveB = w;
-  padOscs.forEach(function(o){ if (o.type && o.type !== 'sine') o.type = w; });
+  tracks.forEach(function(t){ if (t.type === 'pad') t.nodes.forEach(function(o){ if (o.type && o.type !== 'sine') o.type = w; }); });
 }
 function setOct(o){
   state.oct = o;
   state.root = PATCHES[state.p].root * Math.pow(2, o);
   setRootHz(state.root, true);
 }
-/* ============ 换根音 ============ */
-var KEY_NOTES = [
-  {k:'a', name:'A', hz:55}, {k:'s', name:'C', hz:65.41}, {k:'d', name:'D', hz:73.42},
-  {k:'f', name:'E', hz:82.41}, {k:'g', name:'G', hz:98}, {k:'h', name:'A2', hz:110}
-];
-function renderKeys(){
-  var el = document.getElementById('keys');
-  el.innerHTML = '';
-  KEY_NOTES.forEach(function(n){
-    var d = document.createElement('div');
-    d.className = 'key';
-    d.innerHTML = '<b>' + n.name + '</b>根音';
-    d.addEventListener('pointerdown', function(){
-      if (!ctx || !state.playing) return;
-      d.classList.add('hold');
-      setRootHz(n.hz * Math.pow(2, state.oct), true);
-      if (state.p === 'haino') burst(.5);
+
+/* ================= 音轨 UI ================= */
+var trackRow = document.getElementById('trackRow');
+function renderTracks(){
+  trackRow.innerHTML = '';
+  tracks.forEach(function(t, idx){
+    var kind = TRACK_KIND[t.type];
+    var el = document.createElement('div');
+    el.className = 'trk' + (idx === selTrack ? ' sel' : '') + (t.on ? '' : ' off');
+    el.innerHTML =
+      '<div class="top"><span class="tname">' + kind.label + '</span><span class="ttag">' + kind.tag + '</span>' +
+      '<span class="ms"><b class="mute' + (t.on ? '' : ' on') + '" title="开关">M</b><b class="solo' + (t.solo ? ' on' : '') + '" title="独奏">S</b></span>' +
+      '<span class="del" title="删除轨">✕</span></div>' +
+      '<div class="base"><input type="range" min="0" max="100" value="' + t.vol + '"><span class="v">' + t.vol + '</span></div>';
+    el.addEventListener('click', function(e){
+      if (e.target.closest('b') || e.target.closest('.del') || e.target.tagName === 'INPUT') return;
+      selTrack = idx;
+      renderTracks();
     });
-    d.addEventListener('pointerup', function(){ d.classList.remove('hold'); });
-    d.addEventListener('pointerleave', function(){ d.classList.remove('hold'); });
-    el.appendChild(d);
+    el.querySelector('.mute').addEventListener('click', function(){
+      t.on = !t.on; refreshTrackGains(); renderTracks();
+    });
+    el.querySelector('.solo').addEventListener('click', function(){
+      t.solo = !t.solo; refreshTrackGains(); renderTracks();
+    });
+    el.querySelector('.del').addEventListener('click', function(){ removeTrack(t); });
+    var slider = el.querySelector('input');
+    slider.addEventListener('input', function(){
+      t.vol = +slider.value;
+      el.querySelector('.v').textContent = t.vol;
+      refreshTrackGains();
+    });
+    trackRow.appendChild(el);
   });
+}
+document.getElementById('addTrackBtn').addEventListener('click', function(){
+  if (!ctx){ toast('先通电'); return; }
+  if (tracks.length >= 6){ toast('最多 6 轨，已经够炸了'); return; }
+  var type = document.getElementById('addType').value;
+  var t = mkTrack(type, 60);
+  trackOut(t); buildTrackVoices(t); refreshTrackGains();
+  selTrack = tracks.length - 1;
+  renderTracks();
+  toast('已叠加「' + TRACK_KIND[type].label + '」· 共 ' + tracks.length + ' 轨 → 点它开始弹');
+});
+
+/* ================= 演奏键盘 ================= */
+var KEYMAP = [
+  {k:'a', n:0,  white:true},  {k:'w', n:1,  white:false},
+  {k:'s', n:2,  white:true},  {k:'e', n:3,  white:false},
+  {k:'d', n:4,  white:true},  {k:'f', n:5,  white:true},
+  {k:'t', n:6,  white:false}, {k:'g', n:7,  white:true},
+  {k:'y', n:8,  white:false}, {k:'h', n:9,  white:true},
+  {k:'u', n:10, white:false}, {k:'j', n:11, white:true},
+  {k:'k', n:12, white:true},  {k:'l', n:13, white:true}
+];
+var BASE_FREQ = 220;
+var keyEls = {};
+function noteFreq(semi){ return BASE_FREQ * Math.pow(2, semi / 12) * Math.pow(2, state.oct); }
+function renderKeys(){
+  var row = document.getElementById('kbRow');
+  row.innerHTML = '';
+  keyEls = {};
+  var whitesSoFar = 0;
+  KEYMAP.forEach(function(m){
+    var el = document.createElement('div');
+    el.className = 'key' + (m.white ? '' : ' black');
+    el.innerHTML = '<b>' + m.k.toUpperCase() + '</b>';
+    if (!m.white){
+      /* 黑键贴在前一个白键右缘：白键 34px + gap 3px = 37px 步进 */
+      el.style.left = (whitesSoFar * 37 + 24) + 'px';
+    } else {
+      whitesSoFar++;
+    }
+    el.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      keyHit(m, true);
+      el.classList.add('hold');
+    });
+    el.addEventListener('pointerup', function(){ el.classList.remove('hold'); });
+    el.addEventListener('pointerleave', function(){ el.classList.remove('hold'); });
+    row.appendChild(el);
+    keyEls[m.k] = el;
+  });
+}
+function keyHit(m){
+  if (!ctx || !state.playing) return;
+  var t = tracks[selTrack];
+  if (!t) return;
+  if (t.type === 'drone'){ setRootHz(noteFreq(m.n - 12), true); return; }
+  if (t.type === 'pad'){ longPad(m); return; }
+  var f = noteFreq(m.n);
+  if (t.type === 'bell') playBell(f, 1);
+  else if (t.type === 'jaw') playJaw(f / 2, 1);
+  else if (t.type === 'guitar') playGuitar(f, 1);
+  else if (t.type === 'noise') noisePluck(f);
+}
+function longPad(m){
+  var t0 = ctx.currentTime, trk = tracks[selTrack];
+  var f = noteFreq(m.n);
+  var o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = waveB === 'sine' ? 'sine' : waveB;
+  o.frequency.value = f;
+  g.gain.setValueAtTime(.0001, t0);
+  g.gain.exponentialRampToValueAtTime(.08, t0 + .4);
+  g.gain.exponentialRampToValueAtTime(.0001, t0 + 4.5);
+  o.connect(g); g.connect(trk.gain); g.connect(spaceSend);
+  o.start(t0); o.stop(t0 + 4.6);
+}
+function noisePluck(f){
+  var t0 = ctx.currentTime, trk = tracks[selTrack];
+  var s = ctx.createBufferSource();
+  s.buffer = makeNoise(.3, false);
+  var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f * 4; bp.Q.value = 6;
+  var g = ctx.createGain();
+  g.gain.setValueAtTime(.18, t0);
+  g.gain.exponentialRampToValueAtTime(.0001, t0 + .28);
+  s.connect(bp); bp.connect(g); g.connect(trk.gain);
+  s.start(t0); s.stop(t0 + .32);
 }
 function setRootHz(hz, glide){
   state.root = hz;
   if (!ctx) return;
   var now = ctx.currentTime, tt = glide ? .5 : .08;
-  droneOscs.concat(padOscs).forEach(function(o){
-    if (o.type && o.frequency && o.frequency.value > 0 && o.frequency.value < 9000){
-      var r = hz / (state._lastRoot || hz);
-      o.frequency.cancelScheduledValues(now);
-      o.frequency.setTargetAtTime(Math.max(18, o.frequency.value * r), now, tt);
-    }
+  tracks.forEach(function(t){
+    t.nodes.forEach(function(o){
+      if (o.type && o.frequency && o.frequency.value > 0 && o.frequency.value < 9000){
+        var r = hz / (state._lastRoot || hz);
+        o.frequency.cancelScheduledValues(now);
+        o.frequency.setTargetAtTime(Math.max(18, o.frequency.value * r), now, tt);
+      }
+    });
   });
   state._lastRoot = hz;
 }
-/* ============ 爆发/静默/即兴 ============ */
+
+/* ================= 爆发/静默/即兴 ================= */
 function noiseBurst(t0, dur, vol, f0, f1){
   var s = ctx.createBufferSource();
   s.buffer = makeNoise(dur + .2, false);
@@ -723,6 +975,7 @@ function tick(dt){
     }
   }
 }
+
 /* ============ 可视化 + VU ============ */
 var viz = document.getElementById('viz');
 var vx = viz.getContext('2d');
@@ -740,7 +993,7 @@ function drawViz(){
   vx.clearRect(0, 0, W, H);
   var playing = ctx && state.playing;
   var grd = vx.createRadialGradient(W * .5, H * .5, 0, W * .5, H * .5, Math.max(W, H) * .62);
-  grd.addColorStop(0, playing ? 'rgba(36,16,62,1)' : 'rgba(10,8,20,1)');
+  grd.addColorStop(0, playing ? 'rgba(28,20,44,1)' : 'rgba(10,8,20,1)');
   grd.addColorStop(1, 'rgba(2,2,8,1)');
   vx.fillStyle = grd; vx.fillRect(0, 0, W, H);
   var cx = W * .5, cy = H * .5;
@@ -752,7 +1005,7 @@ function drawViz(){
       var v = freqData[Math.floor(Math.pow(i / n, 1.55) * 400)] / 255;
       var a = i / n * Math.PI * 2 + state.t * .35;
       var r = H * .17 + v * H * .28 * (1 + state.burst * 1.6);
-      vx.strokeStyle = 'hsla(' + (state.t * 18 + i * 2.4) % 360 + ',85%,' + (52 + v * 26) + '%,' + (.22 + v * .65) + ')';
+      vx.strokeStyle = 'hsla(' + (state.t * 18 + i * 2.4) % 360 + ',70%,' + (60 + v * 20) + '%,' + (.2 + v * .6) + ')';
       vx.lineWidth = Math.max(1, W / 340);
       vx.beginPath();
       vx.moveTo(cx + Math.cos(a) * H * .16, cy + Math.sin(a) * H * .16);
@@ -804,12 +1057,12 @@ function drawVU(){
   var nSeg = 24, lit = Math.floor(lvl * nSeg);
   for (var i = 0; i < nSeg; i++){
     var x = i * (w / nSeg) + 1, sw = w / nSeg - 2;
-    var col = i < nSeg * .62 ? '#00e0a8' : i < nSeg * .85 ? '#ffd166' : '#ff5a5a';
+    var col = i < nSeg * .62 ? '#3ecf8e' : i < nSeg * .85 ? '#e8c476' : '#e06365';
     vux.fillStyle = i < lit ? col : 'rgba(255,255,255,.05)';
     vux.fillRect(x, 1, sw, h - 2);
-    if (i === lit) vux.fillStyle = col;
   }
 }
+
 /* ============ 接线 ============ */
 function toast(msg){
   var el = document.getElementById('toast');
@@ -827,7 +1080,7 @@ document.getElementById('startBtn').addEventListener('click', function(){
   document.querySelector('.brandLed').classList.add('on');
   applyPatch('haino');
   applyPatchKnobSync();
-  toast('嗡鸣开始 · A~H 换根音 · Space 爆发');
+  toast('嗡鸣开始 · 点轨条选乐器 · 用键盘弹奏 · Space 爆发');
 });
 document.getElementById('presetRow').addEventListener('click', function(e){
   var b = e.target.closest('[data-p]');
@@ -848,7 +1101,6 @@ document.getElementById('autoBtn').addEventListener('click', function(){
   this.classList.toggle('on', state.auto);
   this.textContent = state.auto ? '▶ 即兴' : '⏸ 即兴';
 });
-/* 波形 */
 document.getElementById('waveSeg').addEventListener('click', function(e){
   var b = e.target.closest('button'); if (!b) return;
   this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
@@ -861,14 +1113,12 @@ document.getElementById('padWaveSeg').addEventListener('click', function(e){
   b.classList.add('on');
   setPadWave(b.dataset.w);
 });
-/* 八度 */
 document.getElementById('octSeg').addEventListener('click', function(e){
   var b = e.target.closest('button'); if (!b || !ctx) return;
   this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
   b.classList.add('on');
   setOct(+b.dataset.o);
 });
-/* 噪声类型 */
 document.getElementById('noiseTypeSeg').addEventListener('click', function(e){
   var b = e.target.closest('button'); if (!b || !ctx) return;
   this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
@@ -876,32 +1126,24 @@ document.getElementById('noiseTypeSeg').addEventListener('click', function(e){
   noiseType = b.dataset.t;
   makeNoiseChain();
   noiseGainNode.gain.setTargetAtTime(P.noiselvl / 100 * .5, ctx.currentTime, .05);
+  tracks.forEach(function(t){ if (t.type === 'noise') buildTrackVoices(t); });
 });
-/* 通道推子 */
-function ch(id, vId, fn){
-  var el = document.getElementById(id);
-  var out = document.getElementById(vId);
-  el.addEventListener('input', function(){
-    var v = +el.value;
-    out.textContent = v;
-    fn(v / 100, el);
-  });
-}
-ch('chDrone', 'vDrone', function(v){ if (ctx) droneSub.gain.setTargetAtTime(v * 1.4, ctx.currentTime, .08); });
-ch('chPad', 'vPad', function(v){ if (ctx) padSub.gain.setTargetAtTime(v, ctx.currentTime, .08); });
-ch('chNoise', 'vNoise', function(v){ if (ctx && noiseGainNode) noiseGainNode.gain.setTargetAtTime(v * .5, ctx.currentTime, .05); });
-ch('chMic', 'vMic', function(v){ if (ctx && micStream) micBus.gain.setTargetAtTime(v, ctx.currentTime, .05); });
-/* 键盘 + Space */
+document.getElementById('chMic').addEventListener('input', function(){
+  document.getElementById('vMic').textContent = this.value;
+  if (ctx && micStream) micBus.gain.setTargetAtTime(this.value / 100, ctx.currentTime, .05);
+});
 window.addEventListener('keydown', function(e){
-  if (e.code === 'Space'){ e.preventDefault(); burst(1); }
-  for (var i = 0; i < KEY_NOTES.length; i++){
-    if (KEY_NOTES[i].k === e.key.toLowerCase() && ctx && state.playing){
-      setRootHz(KEY_NOTES[i].hz * Math.pow(2, state.oct), true);
-      break;
-    }
+  if (e.repeat) return;
+  if (e.code === 'Space'){ e.preventDefault(); burst(1); return; }
+  var m = null;
+  for (var i = 0; i < KEYMAP.length; i++){ if (KEYMAP[i].k === e.key.toLowerCase()){ m = KEYMAP[i]; break; } }
+  if (m && ctx && state.playing){
+    e.preventDefault();
+    keyHit(m);
+    var el = keyEls[m.k];
+    if (el){ el.classList.add('hold'); setTimeout(function(){ el && el.classList.remove('hold'); }, 180); }
   }
 });
-/* 鼠标演奏：X=滤波 Y=音量 */
 viz.addEventListener('pointermove', function(e){
   var r = viz.getBoundingClientRect();
   mouseX = (e.clientX - r.left) / r.width;
@@ -909,13 +1151,10 @@ viz.addEventListener('pointermove', function(e){
   mouseInside = true;
   if (ctx && state.playing){
     filt.frequency.setTargetAtTime(60 + mouseX * 7000, ctx.currentTime, .06);
-    droneSub.gain.setTargetAtTime(.2 + mouseY * 1.1, ctx.currentTime, .08);
+    bus.gain.setTargetAtTime(.2 + mouseY * 1.0, ctx.currentTime, .08);
   }
 });
-viz.addEventListener('pointerleave', function(){
-  mouseInside = false;
-  if (ctx) droneSub.gain.setTargetAtTime((document.getElementById('chDrone').value / 100) * 1.4, ctx.currentTime, .3);
-});
+viz.addEventListener('pointerleave', function(){ mouseInside = false; });
 viz.addEventListener('pointerdown', function(){ if (ctx) burst(.8); });
 /* 麦克风 */
 var micStream = null;
@@ -956,6 +1195,7 @@ var last = performance.now();
 setInterval(function(){ tick(.1); }, 100);
 initKnobs();
 renderKeys();
+renderTracks();
 resizeV();
 window.addEventListener('resize', resizeV);
 function loop(now){
